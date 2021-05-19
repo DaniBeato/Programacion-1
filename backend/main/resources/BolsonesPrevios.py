@@ -1,19 +1,19 @@
 from flask_restful import Resource
-from flask import request
+from flask import request, jsonify
+from .. import db
+from main.models import BolsonesModels
 
-BOLSONES_PREVIOS = {
-    1: {'Nombre': 'Bolsón Pendiente 1'},
-    2: {'Nombre': 'Bolsón Pendiente 2'},
-}
 
 
 class BolsonesPrevios(Resource):
     def get(self):
-        return BOLSONES_PREVIOS
+        bolsones_previos = db.session.query(BolsonesModels).all()
+        return jsonify([bolson_previo.hacia_json() for bolson_previo in bolsones_previos])
 
 
 class BolsonPrevio(Resource):
     def get(self, id):
-        if int(id) in BOLSONES_PREVIOS:
-            return  BOLSONES_PREVIOS[int(id)]
-        return '', 404
+        bolson_previo = db.session.query(BolsonesModels).get_or_404(id)
+        return bolson_previo.hacia_json()
+
+

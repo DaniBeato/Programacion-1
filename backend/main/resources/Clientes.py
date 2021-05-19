@@ -1,43 +1,41 @@
 from flask_restful import Resource
-from flask import request
+from flask import request, jsonify
+from .. import db
+from main.models import ClientesModels
 
-CLIENTES = {
-    1: {'Nombre': 'Daniel'},
-    2: {'Nombre': 'Jesús'},
-       }
+
 
 class Clientes(Resource):
     def get(self):
-        return CLIENTES
+        clientes = db.session.query(ClientesModels).all()
+        return jsonify([cliente.hacia_json() for cliente in clientes])
+
+
 
     def post(self):
-        cliente = request.get_json()
-        id = int(max(CLIENTES.keys())) + 1
-        CLIENTES[id] = cliente
-        return CLIENTES[id], 201
+        cliente = ClientesModels.desde_json(request.get_json())
+        db.session.add(cliente)
+        db.session.commit()
+        return cliente.hacia_json(), 201
 
 
 class Cliente(Resource):
     def get(self, id):
-        if int(id) in CLIENTES:
-            return CLIENTES[int(id)]
-        return '', 404
+        cliente = db.session.query(ClientesModels).get_or_404(id)
+        return cliente.hacia_json()
 
     def put(self, id):
-        if int(id) in Clientes:
-            cliente = CLIENTES[int(id)]
-            del CLIENTES[int(id)]
-            cliente2 = request.get_json()
-            CLIENTES[id] = cliente2
-            return cliente2, 201
-        return '', 404
+        cliente = db.session.query(ClientesModels).get_or_404(id)
+        datos = request.get_json().items()
+        for clave, valor in datos:
+            setattr(cliente, clave, valor)
+        db.session.add(cliente)
+        db.session.commit()
+        return cliente.hacia_json()
 
     def delete(self, id):
-        if int(id) in CLIENTES:
-            del CLIENTES[int(id)]
-            return '', 204
-        return '', 404
-
-
-
+        cliente = db.session.query(ClientesModels).get_or_404(id)
+        db.session.delete(cliente)
+        db.session.commit()
+        return '', 204
 
