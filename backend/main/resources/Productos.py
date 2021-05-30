@@ -6,8 +6,16 @@ from main.models import ProductosModels
 
 class Productos(Resource):
     def get(self):
-        productos = db.session.query(ProductosModels).all()
-        return jsonify([producto.hacia_json() for producto in productos])
+        filtros = request.data
+        productos = db.session.query(ProductosModels)
+        if filtros:
+            for clave, valor in request.get_json().items():
+                if clave == 'proveedor_ID':
+                    productos = productos.filter(ProductosModels.proveedor_ID == valor)
+                if clave == 'nombre':
+                    productos = productos.filter(ProductosModels.nombre == valor)
+        productos = productos.all()
+        return jsonify({'Productos': [producto.hacia_json() for producto in productos]})
 
     def post(self):
         producto = ProductosModels.desde_json(request.get_json())

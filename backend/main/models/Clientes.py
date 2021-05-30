@@ -6,6 +6,7 @@ class Clientes(db.Model):
     apellido = db.Column(db.String(100), nullable = False)
     telefono = db.Column(db.String(100), nullable = False)
     mail = db.Column(db.String(100), nullable = False)
+    compras = db.relationship("Compras", back_populates = "clientes", cascade = "all, delete-orphan")
 
     def __repr__(self):
         return '< Nombre: %r, Apellido: %r, Teléfono: %r, Mail: %r >' % (self.nombre, self.apellido, self.telefono, self.mail)
@@ -21,6 +22,7 @@ class Clientes(db.Model):
        }
        return cliente_json
 
+    @staticmethod
     def desde_json(cliente_json):
         id = cliente_json.get('id')
         nombre = cliente_json.get('nombre')

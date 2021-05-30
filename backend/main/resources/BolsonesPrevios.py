@@ -2,13 +2,14 @@ from flask_restful import Resource
 from flask import request, jsonify
 from .. import db
 from main.models import BolsonesModels
+from datetime import datetime, timedelta
 
-
+fecha_vencimiento = datetime.today() - timedelta(days=7)
 
 class BolsonesPrevios(Resource):
     def get(self):
-        bolsones_previos = db.session.query(BolsonesModels).all()
-        return jsonify([bolson_previo.hacia_json() for bolson_previo in bolsones_previos])
+        bolsones_previos = db.session.query(BolsonesModels).filter(BolsonesModels.fecha <= fecha_vencimiento).all()
+        return jsonify({'Bolsones Previos': [bolson_previo.hacia_json() for bolson_previo in bolsones_previos]})
 
 
 class BolsonPrevio(Resource):

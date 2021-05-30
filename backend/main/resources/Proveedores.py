@@ -7,8 +7,14 @@ from main.models import ProveedoresModels
 
 class Proveedores(Resource):
     def get(self):
-        proveedores = db.session.query(ProveedoresModels).all()
-        return jsonify([proveedor.hacia_json() for proveedor in proveedores])
+        filtros = request.data
+        proveedores = db.session.query(ProveedoresModels)
+        if filtros:
+            for clave, valor in request.get_json().items():
+                if clave == 'nombre':
+                    proveedores = proveedores.filter(ProveedoresModels.nombre == valor)
+        proveedores = proveedores.all()
+        return jsonify({'Proveedores': [proveedor.hacia_json() for proveedor in proveedores]})
 
     def post(self):
         proveedor = ProveedoresModels.desde_json(request.get_json())

@@ -4,6 +4,8 @@ class Proveedores(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     nombre = db.Column(db.String(100), nullable = False)
     telefono = db.Column(db.String(100), nullable = False)
+    productos = db.relationship("Productos", back_populates = "proveedores", cascade = "all, delete-orphan")
+
 
     def __repr__(self):
         return'< Nombre: %r, telefono: %r' % (self.nombre, self.telefono)
@@ -18,7 +20,7 @@ class Proveedores(db.Model):
         }
         return proveedor_json
 
-
+    @staticmethod
     def desde_json(proveedor_json):
         id = proveedor_json.get('id')
         nombre = proveedor_json.get('nombre')
@@ -26,4 +28,4 @@ class Proveedores(db.Model):
         return Proveedores(id = id,
                            nombre = nombre,
                            telefono = telefono,
-                            )
+                           )

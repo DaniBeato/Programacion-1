@@ -8,6 +8,23 @@ from main.models import BolsonesModels
 
 class BolsonesPendientes(Resource):
     def get(self):
+        filtros = request.data
+        bolsones_pendientes = db.session.query(BolsonesModels)
+        if filtros:
+            for clave, valor in request.get_json().items():
+                if clave == 'nombre':
+                    bolsones = bolsones_pendientes.filter(BolsonesModels.nombre == valor, BolsonesModels.estado == False)
+        bolsones_pendientes= bolsones_pendientes.filter(BolsonesModels.estado == False)
+        return jsonify({'Bolsones Pendientes': [bolson.hacia_json() for bolson in bolsones_pendientes]})
+
+    def post(self):
+        bolson_pendiente = BolsonesModels.desde_json(request.get_json())
+        db.session.add(bolson_pendiente)
+        db.session.commit()
+        return bolson_pendiente.hacia_json(), 201
+
+'''class BolsonesPendientes(Resource):
+    def get(self):
         bolsones_pendientes = db.session.query(BolsonesModels).all()
         return ([bolson_pendiente.hacia_json() for bolson_pendiente in bolsones_pendientes])
 
@@ -15,7 +32,7 @@ class BolsonesPendientes(Resource):
         bolson_pendiente = BolsonesModels.desde_json(request.get_json())
         db.session.add(bolson_pendiente)
         db.session.commit()
-        return bolson_pendiente.hacia_json(), 201
+        return bolson_pendiente.hacia_json(), 201'''
 
 
 class BolsonPendiente(Resource):
