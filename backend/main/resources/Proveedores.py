@@ -1,46 +1,49 @@
 from flask_restful import Resource
 from flask import request, jsonify
 from .. import db
-from main.models import ProveedoresModels
+from main.models import UsuariosModels
+from main.auth.decoradores import admin_required, proveedor_required, admin_or_proveedor_required
 
 
 
 class Proveedores(Resource):
     def get(self):
         filtros = request.data
-        proveedores = db.session.query(ProveedoresModels)
+        proveedores = db.session.query(UsuariosModels).filter(UsuariosModels.rol == 'proveedor')
         if filtros:
             for clave, valor in request.get_json().items():
                 if clave == 'nombre':
-                    proveedores = proveedores.filter(ProveedoresModels.nombre == valor)
+                    proveedores = proveedores.filter(UsuariosModels.nombre == valor)
         proveedores = proveedores.all()
         return jsonify({'Proveedores': [proveedor.hacia_json() for proveedor in proveedores]})
 
-    def post(self):
-        proveedor = ProveedoresModels.desde_json(request.get_json())
-        db.session.add(proveedor)
-        db.session.commit()
-        return proveedor.hacia_json(), 201
+
 
 
 class Proveedor(Resource):
+
+    @admin_or_proveedor_required
     def get(self, id):
-        proveedor = db.session.query(ProveedoresModels).get_or_404(id)
-        return proveedor.hacia_json()
+        proveedor = db.session.query(UsuariosModels).get_or_404(id)
+        if proveedor.rol == 'proveedor':
+            return proveedor.hacia_json()
 
+    @admin_required
     def put(self, id):
-        proveedor = db.session.query(ProveedoresModels).get_or_404(id)
-        datos = request.get_json().items()
-        for clave, valor in datos:
-            setattr(proveedor, clave, valor)
-        db.session.add(proveedor)
-        db.session.commit()
-        return proveedor.hacia_json(), 201
+        proveedor = db.session.query(UsuariosModels).get_or_404(id)
+        if proveedor.rol == 'proveedor':
+            datos = request.get_json().items()
+            for clave, valor in datos:
+                setattr(proveedor, clave, valor)
+            db.session.add(proveedor)
+            db.session.commit()
+            return proveedor.hacia_json(), 201
 
-
+    @admin_required
     def delete(self, id):
-        proveedor = db.session.query(ProveedoresModels).get_or_404(id)
-        db.session.delete(proveedor)
-        db.session.commit()
-        return '', 204
+        proveedor = db.session.query(UsuariosModels).get_or_404(id)
+        if proveedor.rol == 'proveedor':
+            db.session.delete(proveedor)
+            db.session.commit()
+            return '', 204
 

@@ -2,11 +2,13 @@ from flask_restful import Resource
 from flask import request, jsonify
 from .. import db
 from main.models import ComprasModels
+from main.auth.decoradores import admin_required, cliente_required, admin_or_cliente_required
 
 
 
 
 class Compras(Resource):
+    @admin_required
     def get(self):
         pagina = 1
         cantidad_elementos = 10
@@ -18,8 +20,8 @@ class Compras(Resource):
                     pagina = int(valor)
                 if clave == 'cantidad_elementos':
                     cantidad_elementos = int(valor)
-                if clave == 'clienteID':
-                    compras = compras.filter(ComprasModels.clienteID == valor)
+                if clave == 'usuario_ID':
+                    compras = compras.filter(ComprasModels.usuario_ID == valor)
                 if clave == 'retirado':
                     compras = compras.filter(ComprasModels.retirado == valor)
         compras = compras.paginate(pagina, cantidad_elementos, True, 30)
@@ -29,6 +31,7 @@ class Compras(Resource):
                         'Página actual': pagina
                         })
 
+    @cliente_required
     def post(self):
         compra = ComprasModels.desde_json(request.get_json())
         db.session.add(compra)
@@ -37,11 +40,12 @@ class Compras(Resource):
 
 
 class Compra(Resource):
+    @admin_or_cliente_required
     def get(self, id):
         compra = db.session.query(ComprasModels).get_or_404(id)
         return compra.hacia_json()
 
-
+    @admin_required
     def put(self, id):
         compra = db.session.query(ComprasModels).get_or_404(id)
         datos = request.get_json().items()
@@ -51,7 +55,7 @@ class Compra(Resource):
         db.session.commit()
         return compra.hacia_json(), 201
 
-
+    @admin_required
     def delete(self, id):
         compra = db.session.query(ComprasModels).get_or_404(id)
         db.session.delete(compra)

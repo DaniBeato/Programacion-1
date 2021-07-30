@@ -2,11 +2,13 @@ from flask_restful import Resource
 from flask import request, jsonify
 from .. import db
 from main.models import BolsonesModels
+from main.auth.decoradores import admin_required, proveedor_required, admin_or_proveedor_required
 
 
 
 
 class BolsonesPendientes(Resource):
+    @admin_or_proveedor_required
     def get(self):
         filtros = request.data
         bolsones_pendientes = db.session.query(BolsonesModels)
@@ -17,35 +19,30 @@ class BolsonesPendientes(Resource):
         bolsones_pendientes= bolsones_pendientes.filter(BolsonesModels.estado == False)
         return jsonify({'Bolsones Pendientes': [bolson.hacia_json() for bolson in bolsones_pendientes]})
 
+    @admin_required
     def post(self):
         bolson_pendiente = BolsonesModels.desde_json(request.get_json())
         db.session.add(bolson_pendiente)
         db.session.commit()
         return bolson_pendiente.hacia_json(), 201
 
-'''class BolsonesPendientes(Resource):
-    def get(self):
-        bolsones_pendientes = db.session.query(BolsonesModels).all()
-        return ([bolson_pendiente.hacia_json() for bolson_pendiente in bolsones_pendientes])
 
-    def post(self):
-        bolson_pendiente = BolsonesModels.desde_json(request.get_json())
-        db.session.add(bolson_pendiente)
-        db.session.commit()
-        return bolson_pendiente.hacia_json(), 201'''
 
 
 class BolsonPendiente(Resource):
+    @admin_or_proveedor_required
     def get(self, id):
         bolson_pendiente = db.session.query(BolsonesModels).get_or_404(id)
         return bolson_pendiente.hacia_json()
 
+    @admin_required
     def delete(self, id):
         bolson_pendiente = db.session.query(BolsonesModels).get_or_404(id)
         db.session.delete(bolson_pendiente)
         db.session.commit()
         return '', 204
 
+    @admin_required
     def put(self, id):
         bolson_pendiente = db.session.query(BolsonesModels).get_or_404(id)
         datos = request.get_json().items()
