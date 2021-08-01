@@ -33,24 +33,32 @@ class BolsonPendiente(Resource):
     @admin_or_proveedor_required
     def get(self, id):
         bolson_pendiente = db.session.query(BolsonesModels).get_or_404(id)
-        return bolson_pendiente.hacia_json()
+        if bolson_pendiente.estado == False:
+            return bolson_pendiente.hacia_json()
+        else:
+            return 'Este bolsón se encuentra aprobado'
 
     @admin_required
     def delete(self, id):
         bolson_pendiente = db.session.query(BolsonesModels).get_or_404(id)
-        db.session.delete(bolson_pendiente)
-        db.session.commit()
-        return '', 204
+        if bolson_pendiente.estado == False:
+            db.session.delete(bolson_pendiente)
+            db.session.commit()
+            return '', 204
+        else:
+            return 'Este bolsón se encuentra aprobado'
 
     @admin_required
     def put(self, id):
         bolson_pendiente = db.session.query(BolsonesModels).get_or_404(id)
-        datos = request.get_json().items()
-        for clave, valor in datos:
-            setattr(bolson_pendiente, clave, valor)
-        db.session.add(bolson_pendiente)
-        db.session.commit()
-        return bolson_pendiente.hacia_json(), 201
-
+        if bolson_pendiente.estado == False:
+            datos = request.get_json().items()
+            for clave, valor in datos:
+                setattr(bolson_pendiente, clave, valor)
+            db.session.add(bolson_pendiente)
+            db.session.commit()
+            return bolson_pendiente.hacia_json(), 201
+        else:
+            return 'Este bolsón se encuentra aprobado'
 
 

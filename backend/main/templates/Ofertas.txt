@@ -1,0 +1,6 @@
+¡Hola {{usuario.nombre}} {{usuario.apellido}}!
+Estas son las ofertas de la semana:
+
+{{bolsones_venta}}
+
+Por cualquier inquietud, ¡no dude en consultarnos!

@@ -14,4 +14,6 @@ from .Productos import Productos as ProductosResource
 from .Productos import Producto as ProductoResource
 from .Proveedores import Proveedores as ProveedoresResource
 from .Proveedores import Proveedor as ProveedorResource
+from .Administradores import Administradores as AdministradoresResource
+from .Administradores import Administrador as AdministradorResource
 

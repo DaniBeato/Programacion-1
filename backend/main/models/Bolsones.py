@@ -12,7 +12,7 @@ class Bolsones(db.Model):
 
 
     def __repr__(self):
-        return '< Nombre: %r, Estado: %r, Fecha: %r >' % (self.nombre, self.estado, self.fecha)
+        return '< Nombre: %r, Fecha de creación: %r >' % (self.nombre, self.fecha)
 
     def hacia_json(self):
         bolson_json = {
@@ -35,5 +35,10 @@ class Bolsones(db.Model):
                       fecha = fecha,
                       )
 
-
-
+    @staticmethod
+    def desde_json_ofertas(bolson_json):
+        nombre = bolson_json.get('nombre')
+        fecha = datetime.strptime(bolson_json.get('fecha'), '%d/%m/%Y')
+        return Bolsones(nombre=nombre,
+                        fecha=fecha,
+                        )

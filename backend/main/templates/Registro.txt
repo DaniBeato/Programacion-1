@@ -1,0 +1,20 @@
+¡Hola {{usuario.nombre}} {{usuario.apellido}}!
+Usted se ha registrado como {{usuario.rol}}, en el servicio de compra y venta de bolsones de alimentos.
+
+Funciones según el tipo de usuario:
+
+CLIENTES
+-Explorar los bolsones en venta
+-Explorar los productos
+-Realizar una compra
+-Ver la información de su compra
+-Modificar sus datos personales
+-Explorar la lista de proveedores
+
+
+PROVEEDORES
+-Explorar los bolsones en venta
+-Explorar todos los bolsones
+-Explorar todos los productos
+-Agregar, modificar y borrar los productos
+-Modificar sus datos personales

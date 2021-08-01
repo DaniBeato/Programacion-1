@@ -19,6 +19,9 @@ class BolsonPrevio(Resource):
     @admin_required
     def get(self, id):
         bolson_previo = db.session.query(BolsonesModels).get_or_404(id)
-        return bolson_previo.hacia_json()
+        if bolson_previo.fecha <= fecha_vencimiento:
+            return bolson_previo.hacia_json()
+        else:
+            return 'Este bolsón no ha caducado'
 
 
