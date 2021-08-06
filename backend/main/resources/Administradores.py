@@ -2,7 +2,7 @@ from flask_restful import Resource
 from flask import request, jsonify
 from .. import db
 from main.models import UsuariosModels
-from main.auth.decoradores import admin_required
+from main.auth.decoradores import admin_required, verificacion_token_revocado
 
 
 
@@ -10,6 +10,7 @@ from main.auth.decoradores import admin_required
 
 class Administradores(Resource):
     @admin_required
+    @verificacion_token_revocado
     def get(self):
         pagina = 1
         cantidad_elementos = 10
@@ -39,12 +40,14 @@ class Administradores(Resource):
 
 class Administrador(Resource):
     @admin_required
+    @verificacion_token_revocado
     def get(self, id):
         administrador = db.session.query(UsuariosModels).get_or_404(id)
         if administrador.rol == 'admin':
             return administrador.hacia_json()
 
     @admin_required
+    @verificacion_token_revocado
     def put(self, id):
         administrador = db.session.query(UsuariosModels).get_or_404(id)
         if administrador.rol == 'admin':
@@ -56,6 +59,7 @@ class Administrador(Resource):
             return administrador.hacia_json()
 
     @admin_required
+    @verificacion_token_revocado
     def delete(self, id):
         administrador = db.session.query(UsuariosModels).get_or_404(id)
         if administrador.rol == 'admin':

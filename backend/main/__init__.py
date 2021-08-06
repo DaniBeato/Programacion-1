@@ -6,10 +6,14 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
 from flask_mail import Mail
 
+
+
 api = Api()
 db = SQLAlchemy()
 jwt = JWTManager()
 mailsender = Mail()
+
+
 
 
 def create_app():
@@ -66,4 +70,5 @@ def create_app():
     api.add_resource(resources.AdministradoresResource, '/administradores')
     api.add_resource(resources.AdministradorResource, '/administrador/<id>')
     api.init_app(app)
+
     return app

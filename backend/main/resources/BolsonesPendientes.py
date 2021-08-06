@@ -2,13 +2,14 @@ from flask_restful import Resource
 from flask import request, jsonify
 from .. import db
 from main.models import BolsonesModels
-from main.auth.decoradores import admin_required, proveedor_required, admin_or_proveedor_required
+from main.auth.decoradores import admin_required, proveedor_required, admin_or_proveedor_required, verificacion_token_revocado
 
 
 
 
 class BolsonesPendientes(Resource):
     @admin_or_proveedor_required
+    @verificacion_token_revocado
     def get(self):
         filtros = request.data
         bolsones_pendientes = db.session.query(BolsonesModels)
@@ -20,6 +21,7 @@ class BolsonesPendientes(Resource):
         return jsonify({'Bolsones Pendientes': [bolson.hacia_json() for bolson in bolsones_pendientes]})
 
     @admin_required
+    @verificacion_token_revocado
     def post(self):
         bolson_pendiente = BolsonesModels.desde_json(request.get_json())
         db.session.add(bolson_pendiente)
@@ -31,6 +33,7 @@ class BolsonesPendientes(Resource):
 
 class BolsonPendiente(Resource):
     @admin_or_proveedor_required
+    @verificacion_token_revocado
     def get(self, id):
         bolson_pendiente = db.session.query(BolsonesModels).get_or_404(id)
         if bolson_pendiente.estado == False:
@@ -39,6 +42,7 @@ class BolsonPendiente(Resource):
             return 'Este bolsón se encuentra aprobado'
 
     @admin_required
+    @verificacion_token_revocado
     def delete(self, id):
         bolson_pendiente = db.session.query(BolsonesModels).get_or_404(id)
         if bolson_pendiente.estado == False:
@@ -49,6 +53,7 @@ class BolsonPendiente(Resource):
             return 'Este bolsón se encuentra aprobado'
 
     @admin_required
+    @verificacion_token_revocado
     def put(self, id):
         bolson_pendiente = db.session.query(BolsonesModels).get_or_404(id)
         if bolson_pendiente.estado == False:

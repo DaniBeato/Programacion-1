@@ -2,6 +2,14 @@ from .. import jwt
 from flask import jsonify
 from flask_jwt_extended import verify_jwt_in_request, get_jwt
 from functools import wraps
+from .. import db
+from main.models import Token_revocadoModels
+
+
+
+
+
+
 
 def admin_required(fn):
     @wraps(fn)
@@ -13,6 +21,7 @@ def admin_required(fn):
         else:
             return 'Solo administradores tienen acceso', 403
     return wrapper
+
 
 
 def proveedor_required(fn):
@@ -28,6 +37,7 @@ def proveedor_required(fn):
 
 
 
+
 def cliente_required(fn):
     @wraps(fn)
     def wrapper(*args, **kwargs):
@@ -38,6 +48,7 @@ def cliente_required(fn):
         else:
             return 'Solo clientes tienen acceso'
     return wrapper
+
 
 
 
@@ -84,3 +95,17 @@ def add_claims_to_access_token(usuario):
         'mail': usuario.mail
     }
     return claims
+
+
+def verificacion_token_revocado(fn):
+    @wraps(fn)
+    def wrapper(*args, **kwargs):
+        verify_jwt_in_request()
+        claims = get_jwt()
+        jti = claims["jti"]
+        token = db.session.query(Token_revocadoModels.id).filter_by(jti = jti).scalar()
+        if token:
+            return 'Este token es inválido porque el usuario ha cerrado sesión', 405
+        else:
+            return fn(*args, **kwargs)
+    return wrapper

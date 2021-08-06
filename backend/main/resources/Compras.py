@@ -2,13 +2,17 @@ from flask_restful import Resource
 from flask import request, jsonify
 from .. import db
 from main.models import ComprasModels
-from main.auth.decoradores import admin_required, cliente_required, admin_or_cliente_required
+from main.auth.decoradores import admin_required, cliente_required, admin_or_cliente_required, verificacion_token_revocado
+
+
+
 
 
 
 
 class Compras(Resource):
     @admin_required
+    @verificacion_token_revocado
     def get(self):
         pagina = 1
         cantidad_elementos = 10
@@ -32,6 +36,7 @@ class Compras(Resource):
                         })
 
     @cliente_required
+    @verificacion_token_revocado
     def post(self):
         compra = ComprasModels.desde_json(request.get_json())
         db.session.add(compra)
@@ -41,11 +46,13 @@ class Compras(Resource):
 
 class Compra(Resource):
     @admin_or_cliente_required
+    @verificacion_token_revocado
     def get(self, id):
         compra = db.session.query(ComprasModels).get_or_404(id)
         return compra.hacia_json()
 
     @admin_required
+    @verificacion_token_revocado
     def put(self, id):
         compra = db.session.query(ComprasModels).get_or_404(id)
         datos = request.get_json().items()
@@ -56,6 +63,7 @@ class Compra(Resource):
         return compra.hacia_json(), 201
 
     @admin_required
+    @verificacion_token_revocado
     def delete(self, id):
         compra = db.session.query(ComprasModels).get_or_404(id)
         db.session.delete(compra)

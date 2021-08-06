@@ -2,7 +2,7 @@ from flask_restful import Resource
 from flask import request, jsonify
 from .. import db
 from main.models import UsuariosModels
-from main.auth.decoradores import admin_required, proveedor_required, admin_or_proveedor_required
+from main.auth.decoradores import admin_required, proveedor_required, admin_or_proveedor_required, verificacion_token_revocado
 
 
 
@@ -21,14 +21,15 @@ class Proveedores(Resource):
 
 
 class Proveedor(Resource):
-
     @admin_or_proveedor_required
+    @verificacion_token_revocado
     def get(self, id):
         proveedor = db.session.query(UsuariosModels).get_or_404(id)
         if proveedor.rol == 'proveedor':
             return proveedor.hacia_json()
 
     @admin_required
+    @verificacion_token_revocado
     def put(self, id):
         proveedor = db.session.query(UsuariosModels).get_or_404(id)
         if proveedor.rol == 'proveedor':
@@ -40,6 +41,7 @@ class Proveedor(Resource):
             return proveedor.hacia_json(), 201
 
     @admin_required
+    @verificacion_token_revocado
     def delete(self, id):
         proveedor = db.session.query(UsuariosModels).get_or_404(id)
         if proveedor.rol == 'proveedor':
