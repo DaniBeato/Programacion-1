@@ -17,13 +17,19 @@ def vista_principal():
     return render_template('/main/Vista_principal(1).html', bolsones = bolsones)
     #return render_template('/main/Vista_principal(1).html'
 
+
 @main.route('/envio_ofertas')
 def envio_ofertas():
     return render_template('/main/Envio_ofertas(6).html')
 
 @main.route('/registro')
 def registro():
+
+
+
     return render_template('/main/Registro(2).html')
+
+
 
 @main.route('/ingreso')
 def ingreso():
