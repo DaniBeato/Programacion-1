@@ -1,12 +1,15 @@
+{% block head %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Pie_de_pagina(con_registro)</title>
+    <title>Pie_de_pagina(sin_registro)</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
 </head>
+{% endblock %}
 
+{% block pie %}
 <body>
     <div class ="container-fluid">
         <div class="row">
@@ -56,18 +59,21 @@
         <div class="row">
             <div class="col-md-7"></div>
             <div class="col-md-2">
-                <button type="button" class="btn btn-primary btn-lg">Cambiar de Cuenta</button>
+                <button type="button" class="btn btn-primary btn-lg">Registrarse</button>
             </div>
             <div class="col-md-2">
-                <button type="button" class="btn btn-secondary btn-lg">Cerrar Sesión</button>
+                <button type="button" class="btn btn-secondary btn-lg">Acceder</button>
             </div>
             <div class="col-md-1"></div>
         </div>
     </div>
+{% endblock %}
+
+{% block body %}
+{% endblock %}
 
 
-
-
+{% block footer %}
 <!-- Incluir CDN Jquery-->
 	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
 	<!-- Incluir CDN Popper-->
@@ -76,3 +82,4 @@
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
 </body>
 </html>
+{% endblock %}

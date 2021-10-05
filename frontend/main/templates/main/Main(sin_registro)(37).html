@@ -1,3 +1,4 @@
+{% block head %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -6,6 +7,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
 </head>
+{% endblock %}
+
+
+{% block cabecera %}
 <body>
     <div class ="container-fluid">
         <div class="row">
@@ -23,17 +28,11 @@
                 </div>
             </div>
             <div class="col-md-2">
-                <blockquote class="blockquote">
-                  <p>Nombre:</p>
-                </blockquote>
-                <br>
-                <blockquote class="blockquote">
-                  <p>Apellido:</p>
-                </blockquote>
-                <br>
-                <blockquote class="blockquote">
-                  <p>Rol:</p>
-                </blockquote>
+                <button type="button" class="btn btn-primary btn-lg">Registrarse</button>
+                <div><br></div>
+                <button type="button" class="btn btn-secondary btn-lg">Acceder</button>
+            </div>
+
             </div>
         </div>
         <div class="row">
@@ -54,7 +53,67 @@
             <div class="col-md-5"></div>
         </div>
     </div>
+{% endblock %}
 
+{% block body %}
+{% endblock %}
+
+{% block pie %}
+    <div class ="container-fluid">
+        <div class="row">
+            <div class="col-md-12"><br>Espacio</div>
+        </div>
+        <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-10">
+                <div class="card" style="width: 58rem;">
+                    <div class="card-body">
+                        <h5 class="card-title"><b>Más sobre nosotros</b></h5>
+                        <p class="card-text">Descripción detallada de la página</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2"></div>
+        </div>
+        <div class="row">
+            <div class="col-md-12"><br><br>Espacio</div>
+        </div>
+        <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-1">
+                <button type="button" class="btn btn-info">Preguntas Frecuentes</button>
+            </div>
+            <div class="col-md-2"></div>
+            <div class="col-md-2">
+                <div class="callout"><b>Si tienes alguna duda:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;¡contáctanos!</b></div>
+            </div>
+            <div class="col-md-2"></div>
+            <div class="col-md-2">
+                <button type="button" class="btn btn-dark">Cambiar de<br>Idioma</button>
+            </div>
+            <div class="col-md-1"></div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">Espacio</div>
+        </div>
+        <div class="row">
+            <div class="col-md-5"></div>
+            <div class="col-md-2">mailsoporte@algo.com</div>
+            <div class="col-md-5"></div>
+        </div>
+        <div class="row">
+            <div class="col-md-12"><br><br><br><br>Espacio</div>
+        </div>
+        <div class="row">
+            <div class="col-md-7"></div>
+            <div class="col-md-2"></div>
+            <div class="col-md-1"></div>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block footer %}
     <!-- Incluir CDN Jquery-->
 	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
 	<!-- Incluir CDN Popper-->
@@ -63,3 +122,4 @@
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
 </body>
 </html>
+{% endblock %}
