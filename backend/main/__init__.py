@@ -69,6 +69,8 @@ def create_app():
     api.add_resource(resources.ProveedorResource, '/proveedor/<id>')
     api.add_resource(resources.AdministradoresResource, '/administradores')
     api.add_resource(resources.AdministradorResource, '/administrador/<id>')
+    api.add_resource(resources.UsuariosResource, '/usuarios')
+    api.add_resource(resources.UsuarioResource, '/usuario/<id>')
     api.init_app(app)
 
     return app

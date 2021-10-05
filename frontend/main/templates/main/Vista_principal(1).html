@@ -3,7 +3,7 @@
 
 
 {% block body %}
-
+{% for bolson in bolsones %}
     <div class="container-fluid">
         <div class="row">
             <div class="col-lg-12"><br><br>Espacio</div>
@@ -38,7 +38,7 @@
                         <div class="card">
                             <img src="https://via.placeholder.com/100x100" class="card-img-top" alt="...">
                             <div class="card-body">
-                                <h5 class="card-title">Nombre Bolsón</h5>
+                                <h5 class="card-title">{{bolson.nombre}}</h5>
                                 <p class="card-text">Contenido...</p>
                                 <p class="card-text">Precio$$</p>
                                 <a href="#" class="btn btn-primary">Comprar</a>
@@ -49,7 +49,7 @@
                         <div class="card">
                             <img src="https://via.placeholder.com/100x100" class="card-img-top" alt="...">
                             <div class="card-body">
-                                <h5 class="card-title">Nombre Bolsón</h5>
+                                <h5 class="card-title">{{bolson.nombre}}</h5>
                                 <p class="card-text">Contenido...</p>
                                 <p class="card-text">Precio$$</p>
                                 <a href="#" class="btn btn-primary">Comprar</a>
@@ -60,7 +60,7 @@
                         <div class="card">
                             <img src="https://via.placeholder.com/100x100" class="card-img-top" alt="...">
                             <div class="card-body">
-                                <h5 class="card-title">Nombre Bolsón</h5>
+                                <h5 class="card-title">{{bolson.nombre}}</h5>
                                 <p class="card-text">Contenido...</p>
                                 <p class="card-text">Precio$$</p>
                                 <a href="#" class="btn btn-primary">Comprar</a>
@@ -76,7 +76,7 @@
                         <div class="card">
                             <img src="https://via.placeholder.com/100x100" class="card-img-top" alt="...">
                             <div class="card-body">
-                                <h5 class="card-title">Nombre Bolsón</h5>
+                                <h5 class="card-title">{{bolson.nombre}}</h5>
                                 <p class="card-text">Contenido...</p>
                                 <p class="card-text">Precio$$</p>
                                 <a href="#" class="btn btn-primary">Comprar</a>
@@ -87,7 +87,7 @@
                         <div class="card">
                             <img src="https://via.placeholder.com/100x100" class="card-img-top" alt="...">
                             <div class="card-body">
-                                <h5 class="card-title">Nombre Bolsón</h5>
+                                <h5 class="card-title">{{bolson.nombre}}</h5>
                                 <p class="card-text">Contenido...</p>
                                 <p class="card-text">Precio$$</p>
                                 <a href="#" class="btn btn-primary">Comprar</a>
@@ -98,7 +98,7 @@
                         <div class="card">
                             <img src="https://via.placeholder.com/100x100" class="card-img-top" alt="...">
                             <div class="card-body">
-                                <h5 class="card-title">Nombre Bolsón</h5>
+                                <h5 class="card-title">{{bolson.nombre}}</h5>
                                 <p class="card-text">Contenido...</p>
                                 <p class="card-text">Precio$$</p>
                                 <a href="#" class="btn btn-primary">Comprar</a>
@@ -107,6 +107,7 @@
                     </div>
                 </div>
             </div>
+            <div class="col-md-2"></div>
         </div>
         <div class="row">
             <div class="col-md-12"><br><br><br>Espacio</div>
@@ -122,5 +123,6 @@
             <div class="col-md-12">Espacio</div>
         </div>
     </div>
+{% endfor %}
 {% endblock %}
 

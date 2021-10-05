@@ -1,10 +1,21 @@
-from flask import Blueprint,render_template
+from flask import Blueprint, render_template, current_app
+import requests, json
 
 main = Blueprint('main', __name__, url_prefix='/')
 
 @main.route('/')
 def vista_principal():
-    return render_template('/main/Vista_principal(1).html')
+    data = {}
+    data['pagina'] = 1
+    data['cantidad_elementos'] = 10
+    r = requests.get(
+        current_app.config["API_URL"] + '/bolsones',
+        headers={"content-type":"application/json"},
+        data=json.dumps(data))
+    print(r.text)
+    bolsones = json.loads(r.text)['Bolsones']
+    return render_template('/main/Vista_principal(1).html', bolsones = bolsones)
+    #return render_template('/main/Vista_principal(1).html'
 
 @main.route('/envio_ofertas')
 def envio_ofertas():

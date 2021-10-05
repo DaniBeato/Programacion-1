@@ -15,11 +15,13 @@ class Bolsones(db.Model):
         return '< Nombre: %r, Fecha de creación: %r >' % (self.nombre, self.fecha)
 
     def hacia_json(self):
+        productos = [producto.hacia_json() for producto in self.productos_bolsones]
         bolson_json = {
             'id': self.id,
             'nombre': self.nombre,
             'estado': self.estado,
             'fecha': self.fecha.strftime('%d/%m/%Y'),
+            'productos': productos
         }
         return bolson_json
 
