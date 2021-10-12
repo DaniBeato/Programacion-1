@@ -1,0 +1,29 @@
+<!-- Macro que se encarga de mostrar los errores de validación -->
+{% macro show_error(field) %}
+	{% if field.errors %} <!--Si existen errores -->
+	  <div class="alert alert-danger" role="alert">
+	  {% for error in field.errors %} <!--Recorrer errrores-->
+	   	{{ error }}<br><!--Mostrar error -->
+	  {% endfor %}
+	  </div>
+	{% endif %}
+{% endmacro %}
+
+<!-- Macro que se encarga de mostrar los campos del formulario -->
+{% macro show_field(field) %}
+	{{ field.label }} <!-- Mostrar etiqueta -->
+	{{ field(**kwargs)|safe }} <!-- Mostrar campo -->
+	{{show_error(field)}}  <!-- Llamar a macro que muestra el error -->
+{% endmacro %}
+
+<!-- Macro que se encarga de mostrar los campos del formulario -->
+{% macro show_field_login(field) %}
+	{{ field(**kwargs)|safe }} <!-- Mostrar campo -->
+	{{show_error(field)}}  <!-- Llamar a macro que muestra el error -->
+{% endmacro %}
+
+
+<!-- Macro que se encarga de mostrar los campos tipo submit formulario -->
+{% macro show_submit(field) %}
+	{{ field(**kwargs)|safe }} <!-- Mostrar campo -->
+{% endmacro %}

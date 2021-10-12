@@ -12,7 +12,7 @@ class RegistroForm(FlaskForm):
          validators.Length(min=5)
      ])
 
-    nombre = StringField('nombre',
+    apellido = StringField('apellido',
     [
          validators.required(message='Debe introducir un apellido'),
          validators.Length(min=5)
@@ -24,14 +24,11 @@ class RegistroForm(FlaskForm):
         validators.Email(message='Formato inválido'),
         ])
 
-    contraseña = StringField('contraseña',
+    contrasenia = StringField('contraseña',
     [
         validators.required(message='Debe introducir una contraseña'),
         validators.Length(min=3)
     ])
 
-    rol = StringField('rol',
-    [
-        validators.required(message='Debe introducir una contraseña'),
-        validators.Length(min=3)
-    ])
+    rol = StringField('rol')
+
