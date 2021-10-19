@@ -53,3 +53,9 @@ def ingreso():
     return render_template('/main/Ingreso(3).html')
 
 
+
+@main.route('/menu')
+def menu():
+    return render_template('/main/Menu(cliente)(31).html')
+
+
