@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template
 
+
 bolson = Blueprint('bolson', __name__, url_prefix = '/bolson')
 
 @bolson.route('/bolsones')
@@ -16,7 +17,28 @@ def bolsones_pendientes():
 
 @bolson.route('/bolson_pendiente')
 def bolson_pendiente():
-    return render_template('/bolson/Bolson_pendiente(10).html')
+    filter = BolsonPendienteFilterForm(request.args, meta={'csrf': False})
+    data = {}
+    data['page'] = 1
+    data['per_page'] = 10
+    if 'page' in request.args:
+        data["page"] = request.args.get('page', '')
+    if filter.submit():
+        if filter.yearFrom.data != None:
+            data["year[gte]"] = filter.yearFrom.data.year
+        if filter.yearTo.data != None:
+            data["year[lte]"] = filter.yearTo.data.year
+        print(filter.professorId.data)
+
+    r = requests.get(
+        current_app.config["API_URL"] + '/bolson',
+        headers=headers,
+        data=json.dumps(data))
+    bolsones = json.loads(r.text)["bolsones"]
+    pagination = {}
+    pagination["pages"] = json.loads(r.text)["pages"]
+    pagination["current_page"] = json.loads(r.text)["page"]
+    return render_template('/bolson/Bolson_pendiente(10).html', bolsones=bolsones, pagination=pagination, filter=filter)
 
 @bolson.route('/crear_editar_bolson_pendiente')
 def crear_editar_bolson_pendiente():

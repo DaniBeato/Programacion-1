@@ -29,6 +29,8 @@ class Bolsones(Resource):
                     bolsones = bolsones.filter(BolsonesModels.nombre == valor)
                 if clave == 'estado':
                     bolsones = bolsones.filter(BolsonesModels.estado == valor)
+        #bolsones = bolsones.orderby_by(BolsonesModels.fecha)
+        bolsones = bolsones.orderby_by(BolsonesModels.fecha.desc)
         bolsones = bolsones.paginate(pagina, cantidad_elementos, True, 30)
         return jsonify({'Bolsones': [bolson.hacia_json() for bolson in bolsones.items],
                         'Cantidad total de bolsones': bolsones.total,
