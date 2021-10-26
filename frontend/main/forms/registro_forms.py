@@ -30,5 +30,10 @@ class RegistroForm(FlaskForm):
         validators.Length(min=3)
     ])
 
-    rol = StringField('rol')
+    rol = StringField('rol',
+    [
+        validators.required(message='Debe seleccionar un rol')
+    ])
+
+    submit = SubmitField('Guardar Informacion')
 

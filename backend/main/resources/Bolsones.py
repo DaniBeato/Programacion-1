@@ -30,7 +30,7 @@ class Bolsones(Resource):
                 if clave == 'estado':
                     bolsones = bolsones.filter(BolsonesModels.estado == valor)
         #bolsones = bolsones.orderby_by(BolsonesModels.fecha)
-        bolsones = bolsones.orderby_by(BolsonesModels.fecha.desc)
+        #bolsones = bolsones.orderby_by(BolsonesModels.fecha.desc)
         bolsones = bolsones.paginate(pagina, cantidad_elementos, True, 30)
         return jsonify({'Bolsones': [bolson.hacia_json() for bolson in bolsones.items],
                         'Cantidad total de bolsones': bolsones.total,
@@ -43,8 +43,8 @@ class Bolsones(Resource):
 
 
 class Bolson(Resource):
-    @admin_required
-    @verificacion_token_revocado
+    #@admin_required
+    #@verificacion_token_revocado
     def get(self,id):
        bolson = db.session.query(BolsonesModels).get_or_404(id)
        return bolson.hacia_json()

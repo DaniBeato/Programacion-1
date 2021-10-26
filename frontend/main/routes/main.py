@@ -1,6 +1,8 @@
 from flask import Blueprint, render_template, redirect, url_for, current_app
 import requests, json
+from flask_login import login_required, login_user, logout_user, current_user, LoginManager
 from ..forms.registro_forms import RegistroForm
+from .auth import User
 
 main = Blueprint('main', __name__, url_prefix='/')
 
@@ -38,13 +40,12 @@ def registro():
         headers = {
             'content-type': "application/json"
         }
-
-
-
-
-
-
-    return render_template('/main/Registro(2).html')
+        r = requests.post(
+            current_app.config["API_URL"]+'/auth/login',
+            headers = headers,
+            data = json.dumps(data))
+        return(url_for('main.vista_principal'))
+    return render_template('/main/Registro(2).html', form = form)
 
 
 

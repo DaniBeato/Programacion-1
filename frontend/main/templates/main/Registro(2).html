@@ -4,97 +4,91 @@
 
 {% block body %}
     <div class = "container-fluid">
-         <div class="row">
-            <div class="col-md-12">Espacio</div>
-        </div>
-        <div class="row">
-            <div class="col-md-5"></div>
-            <div class="col-md-6">
-                <h1>Registro</h1>
+        <form metod="POST" action="{{ url_for('main.registro') }}" >
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            <div class="row">
+                <div class="col-md-12">Espacio</div>
             </div>
-            <div class="col-md-1"></div>
-        </div>
-        <div class="row">
-            <div class="col-md-12"><br><br><br><br>Espacio</div>
-        </div>
-        <div class="row">
-            <div class="col-md-2"></div>
-            <div class="col-md-8">
-                <from method
+            <div class="row">
+                <div class="col-md-5"></div>
+                <div class="col-md-6">
+                    <h1>Registro</h1>
+                </div>
+                <div class="col-md-1"></div>
+            </div>
+            <div class="row">
+                <div class="col-md-12"><br><br><br><br>Espacio</div>
+            </div>
+            <div class="row">
+                <div class="col-md-2"></div>
+                <div class="col-md-8">
                     <div class="input-group mb-3">
-                        <span class="input-group-text" id="inputGroup-sizing-default">Nombre</span>
-                        <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+                        {{  show_field(form.nombre, calss='form-control')}}
                     </div>
-            </div>
-            <div class="col-md-2"></div>
-        </div>
-        <div class="row">
-            <div class="col-md-12"><br>Espacio</div>
-        </div>
-        <div class="row">
-            <div class="col-md-2"></div>
-            <div class="col-md-8">
-                <div class="input-group mb-3">
-                    <span class="input-group-text" id="inputGroup-sizing-default">Apellido</span>
-                    <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
                 </div>
+                <div class="col-md-2"></div>
             </div>
-            <div class="col-md-2"></div>
-        </div>
-        <div class="row">
-            <div class="col-md-12"><br>Espacio</div>
-        </div>
-        <div class="row">
-            <div class="col-md-2"></div>
-            <div class="col-md-8">
-                <div class="input-group mb-3">
-                    <span class="input-group-text" id="inputGroup-sizing-default">Mail</span>
-                    <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+            <div class="row">
+                <div class="col-md-12"><br>Espacio</div>
+            </div>
+            <div class="row">
+                <div class="col-md-2"></div>
+                <div class="col-md-8">
+                    <div class="input-group mb-3">
+                        {{  show_field(form.apellido, class='form-control') }}
+                    </div>
                 </div>
+                <div class="col-md-2"></div>
             </div>
-            <div class="col-md-2"></div>
-        </div>
-        <div class="row">
-            <div class="col-md-12"><br>Espacio</div>
-        </div>
-        <div class="row">
-            <div class="col-md-2"></div>
-            <div class="col-md-8">
-                <div class="input-group mb-3">
-                    <span class="input-group-text" id="inputGroup-sizing-default">Contraseña</span>
-                    <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+            <div class="row">
+                <div class="col-md-12"><br>Espacio</div>
+            </div>
+            <div class="row">
+                <div class="col-md-2"></div>
+                <div class="col-md-8">
+                    <div class="input-group mb-3">
+                        {{  show_field(form.email, class='form-control') }}
+                    </div>
                 </div>
+                <div class="col-md-2"></div>
             </div>
-            <div class="col-md-2"></div>
-        </div>
-        <div class="row">
-            <div class="col-md-12"><br>Espacio</div>
-        </div>
-         <div class="row">
-            <div class="col-md-2"></div>
-            <div class="col-md-8">
-               <select class="form-select" aria-label="Default select example">
-                  <option selected>Seleccione el rol</option>
-                  <option value="1">Cliente</option>
-                  <option value="2">Proveedor</option>
-                  <option value="3">Administrador</option>
-               </select>
+            <div class="row">
+                <div class="col-md-12"><br>Espacio</div>
             </div>
-            <div class="col-md-2"></div>
-        </div>
-        <div class="row">
-            <div class="col-md-12"><br><br>Espacio</div>
-        </div>
-        </div>
-        <div class="row">
-            <div class="col-md-5"></div>
-            <div class="col-md-3">
-                <button type="button" class="btn btn-primary">Guardar datos</button>
+            <div class="row">
+                <div class="col-md-2"></div>
+                <div class="col-md-8">
+                    <div class="input-group mb-3">
+                        {{  show_field(form.contrasenia, class='form-control') }}
+                    </div>
+                </div>
+                <div class="col-md-2"></div>
             </div>
-            <div class="col-md-4"></div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">Espacio</div>
-        </div>
+            <div class="row">
+                <div class="col-md-12"><br>Espacio</div>
+            </div>
+             <div class="row">
+                <div class="col-md-2"></div>
+                <div class="col-md-8">
+                    <select class="form-select" aria-label="Default select example">
+                    {{ show_field(form.rol, class='form-control' )}}
+                   </select>
+                </div>
+                <div class="col-md-2"></div>
+            </div>
+            <div class="row">
+                <div class="col-md-12"><br><br>Espacio</div>
+            </div>
+            <div class="row">
+                <div class="col-md-5"></div>
+                <div class="col-md-3">
+	 			    {{ show_submit(form.submit , class='btn btn-success')}}
+                </div>
+                <div class="col-md-4"></div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">Espacio</div>
+            </div>
+        </form>
     </div>
 {% endblock %}

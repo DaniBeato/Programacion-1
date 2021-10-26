@@ -1,5 +1,5 @@
 from .. import login_manager
-from flask import request, flash, redirect, url_for,current_app
+from flask import  flash, redirect, url_for,current_app
 from flask_login import UserMixin, LoginManager, current_user
 import jwt
 from functools import wraps
