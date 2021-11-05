@@ -4,7 +4,7 @@
 
 {% block body %}
     <div class = "container-fluid">
-        <form metod="POST" action="{{ url_for('main.registro') }}" >
+        <form method="POST" action="{{ url_for('main.registro') }}" >
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
             <div class="row">
                 <div class="col-md-12">Espacio</div>
@@ -23,7 +23,7 @@
                 <div class="col-md-2"></div>
                 <div class="col-md-8">
                     <div class="input-group mb-3">
-                        {{  show_field(form.nombre, calss='form-control')}}
+                        {{  show_field(form.nombre, class='form-control')}}
                     </div>
                 </div>
                 <div class="col-md-2"></div>
@@ -59,6 +59,19 @@
                 <div class="col-md-2"></div>
                 <div class="col-md-8">
                     <div class="input-group mb-3">
+                        {{  show_field(form.telefono, class='form-control')}}
+                    </div>
+                </div>
+                <div class="col-md-2"></div>
+            </div>
+            <div class="row">
+                <div class="col-md-12"><br>Espacio</div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-2"></div>
+                <div class="col-md-8">
+                    <div class="input-group mb-3">
                         {{  show_field(form.contrasenia, class='form-control') }}
                     </div>
                 </div>
@@ -71,7 +84,7 @@
                 <div class="col-md-2"></div>
                 <div class="col-md-8">
                     <select class="form-select" aria-label="Default select example">
-                    {{ show_field(form.rol, class='form-control' )}}
+                        {{ show_field(form.rol, class='form-control' )}}
                    </select>
                 </div>
                 <div class="col-md-2"></div>

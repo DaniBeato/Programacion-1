@@ -8,8 +8,31 @@ fecha_vencimiento = datetime.today() - timedelta(days=7)
 
 class BolsonesVenta(Resource):
     def get(self):
-        bolsones_venta = db.session.query(BolsonesModels).filter(BolsonesModels.fecha >= fecha_vencimiento).filter(BolsonesModels.estado == True).all()
-        return jsonify({'Bolsones en Venta': [bolson_venta.hacia_json() for bolson_venta in bolsones_venta]})
+        pagina = 1
+        cantidad_elementos = 10
+        filtros = request.data
+        bolsones_venta = db.session.query(BolsonesModels)
+        if filtros:
+            for clave, valor in request.get_json().items():
+                if clave == 'pagina':
+                    pagina = int(valor)
+                if clave == 'cantidad_elementos':
+                    cantidad_elementos = int(valor)
+                if clave == 'nombre':
+                    bolsones_venta = bolsones_venta.filter(BolsonesModels.nombre == valor)
+                if clave == 'estado':
+                    bolsones_venta = bolsones_venta.filter(BolsonesModels.estado == valor)
+        bolsones_venta = bolsones_venta.filter(BolsonesModels.fecha >= fecha_vencimiento).filter(BolsonesModels.estado == True)
+        bolsones_venta = bolsones_venta.paginate(pagina, cantidad_elementos, True, 30)
+        return jsonify({'Bolsones Venta': [bolson_venta.hacia_json() for bolson_venta in bolsones_venta.items],
+                        'Cantidad total de bolsones en venta': bolsones_venta.total,
+                        'Cantidad de páginas': bolsones_venta.pages,
+                        'Página actual': pagina
+                        })
+
+
+
+
 
 
 class BolsonVenta(Resource):
@@ -18,7 +41,7 @@ class BolsonVenta(Resource):
         if bolson_venta.fecha >= fecha_vencimiento and bolson_venta.estado == True:
             return bolson_venta.hacia_json()
         else:
-            return 'Este bolsón no está a la venta'
+            return 'Este bolsón no está a la venta', 400
 
 
 

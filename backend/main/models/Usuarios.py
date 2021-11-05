@@ -53,6 +53,7 @@ class Usuarios(db.Model):
         telefono = usuario_json.get('telefono')
         mail = usuario_json.get('mail')
         contrasenia = usuario_json.get('contrasenia')
+        print(contrasenia)
         rol = usuario_json.get('rol')
         return Usuarios(id = id,
                         nombre = nombre,

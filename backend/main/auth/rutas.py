@@ -40,6 +40,7 @@ def register():
             db.session.commit()
             sent = sendMail([usuario.mail], "¡Bienvenido!", 'Registro', usuario = usuario)
         except Exception as error:
+            print(error)
             db.session.rollback()
             return str(error), 409
         return usuario.hacia_json(), 201

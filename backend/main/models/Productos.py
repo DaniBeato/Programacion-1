@@ -13,12 +13,11 @@ class Productos(db.Model):
 
 
     def hacia_json(self):
-        self.usuarios = db.session.query(UsuariosModels).get_or_404(self.usuario_ID)
+        #self.usuarios = db.session.query(UsuariosModels).get_or_404(self.usuario_ID)
         producto_json = {
             'id': self.id,
-            #'usuario_ID': self.usuario_ID,
             'nombre': self.nombre,
-            'usuarios': self.usuarios.hacia_json()
+            #'usuarios': self.usuarios.hacia_json()
         }
         return producto_json
 

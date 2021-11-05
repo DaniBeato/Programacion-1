@@ -1,8 +1,10 @@
-from flask import Blueprint, render_template, redirect, url_for, current_app
+from flask import Blueprint, render_template, redirect, url_for, current_app, request
 import requests, json
 from flask_login import login_required, login_user, logout_user, current_user, LoginManager
 from ..forms.registro_forms import RegistroForm
+from ..forms.ingreso_forms import IngresoForm
 from .auth import User
+from .auth import admin_required
 
 main = Blueprint('main', __name__, url_prefix='/')
 
@@ -10,7 +12,7 @@ main = Blueprint('main', __name__, url_prefix='/')
 def vista_principal():
     data = {}
     data['pagina'] = 1
-    data['cantidad_elementos'] = 10
+    data['cantidad_elementos'] = 1
     r = requests.get(
         current_app.config["API_URL"] + '/bolsones',
         headers={"content-type":"application/json"},
@@ -34,24 +36,45 @@ def registro():
         data["nombre"] = form.nombre.data
         data["apellido"] = form.apellido.data
         data["mail"] = form.email.data
-        data["contaseña"] = form.contrasenia.data
+        data['telefono'] = form.telefono.data
+        data["contrasenia"] = form.contrasenia.data
         data["rol"] = form.rol.data
         print(data)
+        #auth = request.cookies['access_token']
         headers = {
-            'content-type': "application/json"
+            'content-type': "application/json",
+            #'authorization': "Bearer " + auth
         }
         r = requests.post(
-            current_app.config["API_URL"]+'/auth/login',
+            current_app.config["API_URL"]+'/auth/register',
             headers = headers,
             data = json.dumps(data))
-        return(url_for('main.vista_principal'))
+        return redirect(url_for('main.vista_principal'))
+    print(form.errors)
     return render_template('/main/Registro(2).html', form = form)
 
 
 
-@main.route('/ingreso')
+@main.route('/ingreso', methods=['POST', "GET"])
 def ingreso():
-    return render_template('/main/Ingreso(3).html')
+    form = IngresoForm()
+    if form.validate_on_submit():
+        data = {}
+        data["mail"] = form.email.data
+        data["contrasenia"] = form.contrasenia.data
+        print(data)
+        #auth = request.cookies['access_token']
+        headers = {
+            'content-type': "application/json",
+            #'authorization': "Bearer " + auth
+        }
+        r = requests.post(
+            current_app.config["API_URL"] + '/auth/login',
+            headers=headers,
+            data=json.dumps(data))
+        return redirect(url_for('main.vista_principal'))
+    print(form.errors)
+    return render_template('/main/Ingreso(3).html', form=form)
 
 
 

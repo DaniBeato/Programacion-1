@@ -5,10 +5,10 @@ import jwt
 from functools import wraps
 
 class User(UserMixin):
-    def __init__(self, id, email, role):
+    def __init__(self, id, email, rol):
         self.id = id
         self.email = email
-        self.role = role
+        self.rol = rol
 
 
 @login_manager.request_loader
