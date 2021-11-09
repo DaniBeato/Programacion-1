@@ -12,8 +12,8 @@ from main.auth.decoradores import admin_required, verificacion_token_revocado
 
 
 class Bolsones(Resource):
-    #@admin_required
-    #@verificacion_token_revocado
+    @admin_required
+    @verificacion_token_revocado
     def get(self):
         pagina = 1
         cantidad_elementos = 10
@@ -43,8 +43,8 @@ class Bolsones(Resource):
 
 
 class Bolson(Resource):
-    #@admin_required
-    #@verificacion_token_revocado
+    @admin_required
+    @verificacion_token_revocado
     def get(self,id):
        bolson = db.session.query(BolsonesModels).get_or_404(id)
        return bolson.hacia_json()

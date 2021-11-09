@@ -9,8 +9,8 @@ from main.auth.decoradores import admin_required, verificacion_token_revocado
 fecha_vencimiento = datetime.today() - timedelta(days=7)
 
 class BolsonesPrevios(Resource):
-    #@admin_required
-    #@verificacion_token_revocado
+    @admin_required
+    @verificacion_token_revocado
     def get(self):
         pagina = 1
         cantidad_elementos = 10
@@ -36,8 +36,8 @@ class BolsonesPrevios(Resource):
 
 
 class BolsonPrevio(Resource):
-    #@admin_required
-    #@verificacion_token_revocado
+    @admin_required
+    @verificacion_token_revocado
     def get(self, id):
         bolson_previo = db.session.query(BolsonesModels).get_or_404(id)
         if bolson_previo.fecha <= fecha_vencimiento:

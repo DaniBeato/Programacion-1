@@ -15,8 +15,11 @@ class User(UserMixin):
 def load_user(request):
     if 'access_token' in request.cookies:
         try:
-            decoded = jwt.decoded = jwt.decode(request.cookies['access_token'], current_app.config["SECRET_KEY"], algorithm=["HS256"], verify=False)
-            user = User(decoded["id"], decoded["email"], decoded["role"])
+            print(request.cookies['access_token'])
+            print(current_app.config["SECRET_KEY"])
+            decoded =jwt.decode(request.cookies['access_token'], current_app.config["SECRET_KEY"], algorithm=["HS256"], verify=False)
+            print(decoded)
+            user = User(decoded["id"], decoded["mail"], decoded["rol"])
             return user
         except jwt.exceptions.InvalidTokenError:
             print('Token Inválido')
@@ -25,7 +28,7 @@ def load_user(request):
     return None
 
 
-@login_manager.unauthorized_handler
+#@login_manager.unauthorized_handler
 def unauthorized_callback():
     flash('Debe iniciar sesión para continuar','warning')
     return redirect((url_for('main.vista_principal')))
@@ -34,7 +37,7 @@ def unauthorized_callback():
 def admin_required(fn):
     @wraps(fn)
     def wrapper(*args, **kwargs):
-        if not current_user.role == "admin":
+        if not current_user.rol == "admin":
             flash('Acceso restringido a administradores.', 'warning')
             return redirect(url_for('main.vista_principal'))
         return fn(*args, **kwargs)
@@ -44,7 +47,7 @@ def admin_required(fn):
 def proveedor_required(fn):
     @wraps(fn)
     def wrapper(*args, **kwargs):
-        if not current_user.role == "proveedor":
+        if not current_user.rol == "proveedor":
             flash('Acceso restringido a proveedores.','warning')
             return redirect(url_for('main.vista_principal'))
         return fn(*args, **kwargs)
@@ -54,7 +57,7 @@ def proveedor_required(fn):
 def cliente_required(fn):
     @wraps(fn)
     def wrapper(*args, **kwargs):
-        if not current_user.role == "cliente":
+        if not current_user.rol == "cliente":
             flash('Acceso restringido a clientes.', 'warning')
             return redirect(url_for('main.vista_principal'))
         return fn(*args, **kwargs)
@@ -65,7 +68,7 @@ def cliente_required(fn):
 def admin_or_proveedor_required(fn):
     @wraps(fn)
     def wrapper(*args, **kwargs):
-        if current_user.role != "admin":
+        if current_user.rol != "admin":
             flash('Acceso restringido a administradores.', 'warning')
             return redirect(url_for('main.vista_principal'))
         else:
@@ -80,11 +83,11 @@ def admin_or_proveedor_required(fn):
 def admin_or_cliente_required(fn):
     @wraps(fn)
     def wrapper(*args, **kwargs):
-        if current_user.role != "admin":
+        if current_user.rol != "admin":
             flash('Acceso restringido a administradores.', 'warning')
             return redirect(url_for('main.vista_principal'))
         else:
-            if current_user.role != "cliente":
+            if current_user.rol != "cliente":
                 flash('Acceso restringido a clientes.', 'warning')
                 return redirect(url_for('main.vista_principal'))
         return fn(*args, **kwargs)

@@ -13,9 +13,14 @@ def vista_principal():
     data = {}
     data['pagina'] = 1
     data['cantidad_elementos'] = 1
+    auth = request.cookies['access_token']
+    headers = {
+        'content-type': "application/json",
+        'authorization': "Bearer " + auth
+    }
     r = requests.get(
         current_app.config["API_URL"] + '/bolsones',
-        headers={"content-type":"application/json"},
+        headers=headers,
         data=json.dumps(data))
     print(r.text)
     bolsones = json.loads(r.text)['Bolsones']
@@ -42,14 +47,30 @@ def registro():
         print(data)
         #auth = request.cookies['access_token']
         headers = {
-            'content-type': "application/json",
+            'content-type': "application/json"
             #'authorization': "Bearer " + auth
         }
         r = requests.post(
             current_app.config["API_URL"]+'/auth/register',
             headers = headers,
             data = json.dumps(data))
-        return redirect(url_for('main.vista_principal'))
+        data_log = {}
+        data_log["mail"] = data["mail"]
+        data_log["contrasenia"] = data["contrasenia"]
+        if r.status_code == 201:
+            r = requests.post(
+                current_app.config["API_URL"] + '/auth/login',
+                headers=headers,
+                data=json.dumps(data_log))
+            datos_usuario = json.loads(r.text)
+            print('datos usuario', datos_usuario)
+            usuario = User(id = datos_usuario.get("id"), email = datos_usuario.get("email"), rol = datos_usuario.get("rol"))
+            login_user(usuario)
+            req = make_response(redirect(url_for('main.vista_principal')))
+            req.set_cookie('access_token', datos_usuario.get("token_acceso"), httponly = True)
+            return req
+        else:
+            flash('Usuario o contraseña incorrecta', 'danger')
     print(form.errors)
     return render_template('/main/Registro(2).html', form = form)
 
@@ -64,10 +85,8 @@ def ingreso():
         data["contrasenia"] = form.contrasenia.data
         #data = '{"email":"' + form.email.data + '", "password":"' + form.password.data + '"}'
         print(data)
-        #auth = request.cookies['access_token']
         headers = {
             'content-type': "application/json",
-            #'authorization': "Bearer " + auth
         }
         r = requests.post(
             current_app.config["API_URL"] + '/auth/login',

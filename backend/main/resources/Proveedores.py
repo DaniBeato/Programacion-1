@@ -21,15 +21,15 @@ class Proveedores(Resource):
 
 
 class Proveedor(Resource):
-    #@admin_or_proveedor_required
-    #@verificacion_token_revocado
+    @admin_or_proveedor_required
+    @verificacion_token_revocado
     def get(self, id):
         proveedor = db.session.query(UsuariosModels).get_or_404(id)
         if proveedor.rol == 'proveedor':
             return proveedor.hacia_json()
 
-    #@admin_required
-    #@verificacion_token_revocado
+    @admin_required
+    @verificacion_token_revocado
     def put(self, id):
         proveedor = db.session.query(UsuariosModels).get_or_404(id)
         if proveedor.rol == 'proveedor':
@@ -40,8 +40,8 @@ class Proveedor(Resource):
             db.session.commit()
             return proveedor.hacia_json(), 201
 
-    #@admin_required
-    #@verificacion_token_revocado
+    @admin_required
+    @verificacion_token_revocado
     def delete(self, id):
         proveedor = db.session.query(UsuariosModels).get_or_404(id)
         if proveedor.rol == 'proveedor':
