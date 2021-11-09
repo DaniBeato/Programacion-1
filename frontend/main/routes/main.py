@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for, current_app, request
+from flask import Blueprint, render_template, redirect, url_for, current_app, request, make_response, flash
 import requests, json
 from flask_login import login_required, login_user, logout_user, current_user, LoginManager
 from ..forms.registro_forms import RegistroForm
@@ -62,6 +62,7 @@ def ingreso():
         data = {}
         data["mail"] = form.email.data
         data["contrasenia"] = form.contrasenia.data
+        #data = '{"email":"' + form.email.data + '", "password":"' + form.password.data + '"}'
         print(data)
         #auth = request.cookies['access_token']
         headers = {
@@ -72,8 +73,18 @@ def ingreso():
             current_app.config["API_URL"] + '/auth/login',
             headers=headers,
             data=json.dumps(data))
-        return redirect(url_for('main.vista_principal'))
+        if r.status_code == 200:
+            datos_usuario = json.loads(r.text)
+            print('datos usuario', datos_usuario)
+            usuario = User(id = datos_usuario.get("id"), email = datos_usuario.get("email"), rol = datos_usuario.get("rol"))
+            login_user(usuario)
+            req = make_response(redirect(url_for('main.vista_principal')))
+            req.set_cookie('access_token', datos_usuario.get("token_acceso"), httponly = True)
+            return req
+        else:
+            flash('Usuario o contraseña incorrecta', 'danger')
     print(form.errors)
+    #return redirect(url_for('main.vista_principal'))
     return render_template('/main/Ingreso(3).html', form=form)
 
 

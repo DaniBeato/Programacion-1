@@ -49,9 +49,15 @@ def clientes():
     return render_template('/usuario/Clientes_lista(17).html', clientes=clientes)
 
 
-@usuario.route('/cliente')
-def cliente():
-    return render_template('/usuario/Cliente(18).html')
+@usuario.route('/cliente/<int:id>')
+def cliente(id):
+    r = requests.get(
+        current_app.config["API_URL"] + '/cliente/' + str(id),
+        headers={"content-type": "application/json"})
+    if (r.status_code == 404):
+        return redirect(url_for('usuario.clientes'))
+    cliente = json.loads(r.text)
+    return render_template('/usuario/Cliente(18).html', cliente=cliente)
 
 
 @usuario.route('/editar_cliente')
@@ -61,22 +67,52 @@ def editar_cliente():
 
 @usuario.route('/compras')
 def compras():
-    return render_template('/usuario/Compras_lista(19).html')
+    data = {}
+    data['pagina'] = "1"
+    data['cantidad_elementos'] = "1"
+    r = requests.get(
+        current_app.config["API_URL"] + '/compras',
+        headers={"content-type": "application/json"},
+        data=json.dumps(data))
+    print(r.text)
+    compras = json.loads(r.text)['Compras']
+    return render_template('/usuario/Compras_lista(19).html', compras=compras)
 
 
-@usuario.route('/compra')
-def compra():
-    return render_template('/usuario/Compra(20).html')
+@usuario.route('/compra/<int:id>')
+def compra(id):
+    r = requests.get(
+        current_app.config["API_URL"] + '/compra/' + str(id),
+        headers={"content-type": "application/json"})
+    if (r.status_code == 404):
+        return redirect(url_for('usuario.compras'))
+    compra = json.loads(r.text)
+    return render_template('/usuario/Compra(20).html', compra=compra)
 
 
 @usuario.route('/proveedores')
 def proveedores():
-    return render_template('/usuario/Proveedores_lista(23).html')
+    data = {}
+    data['pagina'] = "1"
+    data['cantidad_elementos'] = "1"
+    r = requests.get(
+        current_app.config["API_URL"] + '/proveedores',
+        headers={"content-type": "application/json"},
+        data=json.dumps(data))
+    print(r.text)
+    proveedores = json.loads(r.text)['Proveedores']
+    return render_template('/usuario/Proveedores_lista(23).html', proveedores=proveedores)
 
 
-@usuario.route('/proveedor')
-def proveedor():
-    return render_template('/usuario/Proveedor(24).html')
+@usuario.route('/proveedor/<int:id>')
+def proveedor(id):
+    r = requests.get(
+        current_app.config["API_URL"] + '/proveedor/' + str(id),
+        headers={"content-type": "application/json"})
+    if (r.status_code == 404):
+        return redirect(url_for('usuario.proveedores'))
+    proveedor = json.loads(r.text)
+    return render_template('/usuario/Proveedor(24).html', proveedor=proveedor)
 
 
 @usuario.route('/crear_editar_proveedor')
