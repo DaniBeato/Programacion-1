@@ -9,8 +9,8 @@ from main.auth.decoradores import admin_required, verificacion_token_revocado
 
 
 class Administradores(Resource):
-    @admin_required
-    @verificacion_token_revocado
+    #@admin_required
+    #@verificacion_token_revocado
     def get(self):
         pagina = 1
         cantidad_elementos = 10
@@ -39,15 +39,15 @@ class Administradores(Resource):
 
 
 class Administrador(Resource):
-    @admin_required
-    @verificacion_token_revocado
+    #@admin_required
+    #@verificacion_token_revocado
     def get(self, id):
         administrador = db.session.query(UsuariosModels).get_or_404(id)
         if administrador.rol == 'admin':
             return administrador.hacia_json()
 
-    @admin_required
-    @verificacion_token_revocado
+    #@admin_required
+    #@verificacion_token_revocado
     def put(self, id):
         administrador = db.session.query(UsuariosModels).get_or_404(id)
         if administrador.rol == 'admin':
@@ -58,8 +58,8 @@ class Administrador(Resource):
             db.session.commit()
             return administrador.hacia_json()
 
-    @admin_required
-    @verificacion_token_revocado
+    #@admin_required
+    #@verificacion_token_revocado
     def delete(self, id):
         administrador = db.session.query(UsuariosModels).get_or_404(id)
         if administrador.rol == 'admin':

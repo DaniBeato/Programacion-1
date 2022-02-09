@@ -1,0 +1,23 @@
+{% macro show_cards(objects, url, feature) %}
+    <div class="row">
+        <div class="col-md-1"></div>
+        <div class="col-md-10">
+            <div class="row">
+                 {% for dict in objects %}
+                     <div class="card" style="width: 18rem;">
+                        <img src="https://via.placeholder.com/150" class="card-img-top" alt="...">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ dict[feature] }}</h5>
+                            <a href="{{url_for(url, id=dict['id'])}}" class="btn btn-primary">Mostrar detalles</a>
+                        </div>
+                     </div>
+                 {% endfor %}
+            </div>
+        <div class="col-md-1"></div>
+        </div>
+    </div>
+
+{% endmacro %}
+
+
+

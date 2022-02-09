@@ -1,85 +1,11 @@
 {% extends './main/Main(sin_registro)(37).html' %}
+{% import 'macros/object.html' as macro_object %}
+{% import 'macros/header.html' as macro_header %}
 
 
 {% block body %}
-    <div class = "container-fluid">
-         <div class="row">
-            <div class="col-md-12">Espacio</div>
-        </div>
-        <div class="row">
-            <div class="col-md-4"></div>
-            <div class="col-md-6">
-                <h1>Detalles Bolsón en Venta</h1>
-            </div>
-            <div class="col-md-2"></div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">Espacio</div>
-        </div>
-        <div class="row">
-            <img src="https://via.placeholder.com/300" class="rounded mx-auto d-block" alt="...">
-        </div>
-        <div class="row">
-            <div class="col-md-12"><br><br><br><br>Espacio</div>
-        </div>
-        <div class="row">
-            <div class="col-md-1"></div>
-            <div class="col-md-2">
-                <div class="p-3 mb-2 bg-primary text-white">Nombre</div>
-            </div>
-            <div class="col-md-1"></div>
-            <div class="col-md-7">
-                <div class="card">
-                    <div class="card-body">{{ bolson_venta.nombre }}</div>
-                </div>
-            </div>
-            <div class="col-md-1"></div>
-        </div>
-        <div class="row">
-            <div class="col-md-12"><br><br><br>Espacio</div>
-        </div>
-        <div class="row">
-            <div class="col-md-1"></div>
-            <div class="col-md-2">
-                <div class="p-3 mb-2 bg-primary text-white">Fecha</div>
-            </div>
-            <div class="col-md-1"></div>
-            <div class="col-md-7">
-                <div class="card">
-                    <div class="card-body">{{ bolson_venta.fecha }}</div>
-                </div>
-            </div>
-            <div class="col-md-1"></div>
-        </div>
-        <div class="row">
-            <div class="col-md-12"><br><br><br>Espacio</div>
-        </div>
-        <div class="row">
-            <div class="col-md-1"></div>
-            <div class="col-md-2">
-                <div class="p-3 mb-2 bg-primary text-white">Precio</div>
-            </div>
-            <div class="col-md-1"></div>
-            <div class="col-md-7">
-                <div class="card">
-                    <div class="card-body">Información</div>
-                </div>
-            </div>
-            <div class="col-md-1"></div>
-        </div>
-        <div class="row">
-            <div class="col-md-12"><br><br><br>Espacio</div>
-        </div>
-        <div class="row">
-            <div class="col-md-5"></div>
-            <div class="col-md-2">
-               <button type="button" class="btn btn-success">Comprar</button>
-            </div>
-            <div class="col-md-5"></div>
-        </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12"><br><br>Espacio</div>
-        </div>
-    </div>
+   <div class="container-fluid">
+       {{ macro_header.show_header(header) }}
+       {{ macro_object.show_object(object) }}
+   </div>
 {% endblock %}

@@ -49,7 +49,7 @@ def register():
 
 
 @auth.route("/logout/<id>", methods = ["DELETE"])
-@jwt_required()
+#@jwt_required()
 def logout(id):
     now = datetime.now()
     tokens = db.session.query(Token_revocadoModels).all()

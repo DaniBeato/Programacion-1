@@ -1,103 +1,11 @@
 {% extends './main/Main(sin_registro)(37).html' %}
+{% import 'macros/object.html' as macro_object %}
+{% import 'macros/header.html' as macro_header %}
 
 
 {% block body %}
-    <div class = "container-fluid">
-         <div class="row">
-            <div class="col-md-12">Espacio</div>
-        </div>
-        <div class="row">
-            <div class="col-md-5"></div>
-            <div class="col-md-6">
-                <h1>Detalles Cliente</h1>
-            </div>
-            <div class="col-md-1"></div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">Espacio</div>
-        </div>
-        <div class="row">
-            <img src="https://via.placeholder.com/300" class="rounded mx-auto d-block" alt="...">
-        </div>
-        <div class="row">
-            <div class="col-md-12"><br><br><br><br>Espacio</div>
-        </div>
-        <div class="row">
-            <div class="col-md-1"></div>
-            <div class="col-md-2">
-                <div class="p-3 mb-2 bg-primary text-white">Nombre</div>
-            </div>
-            <div class="col-md-1"></div>
-            <div class="col-md-7">
-                <div class="card">
-                    <div class="card-body">{{ cliente.nombre }}</div>
-                </div>
-            </div>
-            <div class="col-md-1"></div>
-        </div>
-        <div class="row">
-            <div class="col-md-12"><br><br><br>Espacio</div>
-        </div>
-        <div class="row">
-            <div class="col-md-1"></div>
-            <div class="col-md-2">
-                <div class="p-3 mb-2 bg-primary text-white">Apellido</div>
-            </div>
-            <div class="col-md-1"></div>
-            <div class="col-md-7">
-                <div class="card">
-                    <div class="card-body">{{ cliente.apellido }}</div>
-                </div>
-            </div>
-            <div class="col-md-1"></div>
-        </div>
-        <div class="row">
-            <div class="col-md-12"><br><br><br>Espacio</div>
-        </div>
-        <div class="row">
-            <div class="col-md-1"></div>
-            <div class="col-md-2">
-                <div class="p-3 mb-2 bg-primary text-white">Teléfono</div>
-            </div>
-            <div class="col-md-1"></div>
-            <div class="col-md-7">
-                <div class="card">
-                    <div class="card-body">{{ cliente.telefono }}</div>
-                </div>
-            </div>
-            <div class="col-md-1"></div>
-        </div>
-        <div class="row">
-            <div class="col-md-12"><br><br><br>Espacio</div>
-        </div>
-        <div class="row">
-            <div class="col-md-1"></div>
-            <div class="col-md-2">
-                <div class="p-3 mb-2 bg-primary text-white">Mail</div>
-            </div>
-            <div class="col-md-1"></div>
-            <div class="col-md-7">
-                <div class="card">
-                    <div class="card-body">{{ cliente.mail }}</div>
-                </div>
-            </div>
-            <div class="col-md-1"></div>
-        </div>
-        <div class="row">
-            <div class="col-md-12"><br><br><br>Espacio</div>
-        </div>
-        <div class="row">
-            <div class="col-md-4"></div>
-            <div class="col-md-3">
-                <button type="button" class="btn btn-danger">Eliminar Cliente</button>
-            </div>
-            <div class="col-md-3"></div>
-            <div class="col-md-2">
-                <a href="/usuario/editar_cliente" class="btn btn-primary">Editar información</a>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">Espacio</div>
-        </div>
-    </div>
+   <div class="container-fluid">
+       {{ macro_header.show_header(header) }}
+       {{ macro_object.show_object(object) }}
+   </div>
 {% endblock %}

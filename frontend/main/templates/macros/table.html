@@ -1,0 +1,31 @@
+{% macro show_rows(objects, url, ths_list, first_dict) %}
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-bordered table-dark table-striped">
+                <tr>
+                    {% for key in objects[first_dict] %}
+                        {% for th in ths_list %}
+                            {% if key == th %}
+                                <th>{{ key }}</th>
+                            {% endif %}
+                        {% endfor %}
+                    {% endfor %}
+                </tr>
+                {% for dict in objects %}
+                    <tr>
+                    {% for key in dict %}
+                        {% for th in ths_list %}
+                            {% if key == th %}
+                                <th>{{ dict[key] }}</th>
+                            {% endif %}
+                        {% endfor %}
+                    {% endfor %}
+                        <td>
+                            <a type="button" href="{{ url_for(url, id=dict['id']) }}" class="btn btn-primary">Ver</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+{% endmacro %}

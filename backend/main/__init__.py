@@ -72,5 +72,4 @@ def create_app():
     api.add_resource(resources.UsuariosResource, '/usuarios')
     api.add_resource(resources.UsuarioResource, '/usuario/<id>')
     api.init_app(app)
-
     return app

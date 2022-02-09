@@ -12,7 +12,7 @@ class IngresoForm(FlaskForm):
             validators.Email(message='Formato inválido'),
         ])
 
-    contrasenia = StringField('contraseña',
+    contrasenia = StringField('Contraseña',
         [
             validators.required(message='Debe introducir una contraseña'),
             validators.Length(min=3)

@@ -1,107 +1,94 @@
 {% extends './main/Main(sin_registro)(37).html' %}
 {% from 'macros/form.html' import show_field, show_submit %}
+{% import 'macros/header.html' as macro_header %}
 
 
 {% block body %}
-    <div class = "container-fluid">
-        <form method="POST" action="{{ url_for('main.registro') }}" >
-            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-            <div class="row">
-                <div class="col-md-12">Espacio</div>
-            </div>
-            <div class="row">
-                <div class="col-md-5"></div>
-                <div class="col-md-6">
-                    <h1>Registro</h1>
+    {{ macro_header.show_header(header) }}
+    <form method="POST" action="{{ url_for('main.registro') }}" >
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-8">
+                <div class="input-group mb-3">
+                    {{  show_field(form.nombre, class='form-control')}}
                 </div>
-                <div class="col-md-1"></div>
             </div>
-            <div class="row">
-                <div class="col-md-12"><br><br><br><br>Espacio</div>
-            </div>
-            <div class="row">
-                <div class="col-md-2"></div>
-                <div class="col-md-8">
-                    <div class="input-group mb-3">
-                        {{  show_field(form.nombre, class='form-control')}}
-                    </div>
+            <div class="col-md-2"></div>
+        </div>
+        <div class="row">
+            <div class="col-md-12"><br>&nbsp;</div>
+        </div>
+        <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-8">
+                <div class="input-group mb-3">
+                    {{  show_field(form.apellido, class='form-control') }}
                 </div>
-                <div class="col-md-2"></div>
             </div>
-            <div class="row">
-                <div class="col-md-12"><br>Espacio</div>
-            </div>
-            <div class="row">
-                <div class="col-md-2"></div>
-                <div class="col-md-8">
-                    <div class="input-group mb-3">
-                        {{  show_field(form.apellido, class='form-control') }}
-                    </div>
+            <div class="col-md-2"></div>
+        </div>
+        <div class="row">
+            <div class="col-md-12"><br>&nbsp;</div>
+        </div>
+        <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-8">
+                <div class="input-group mb-3">
+                    {{  show_field(form.email, class='form-control') }}
                 </div>
-                <div class="col-md-2"></div>
             </div>
-            <div class="row">
-                <div class="col-md-12"><br>Espacio</div>
-            </div>
-            <div class="row">
-                <div class="col-md-2"></div>
-                <div class="col-md-8">
-                    <div class="input-group mb-3">
-                        {{  show_field(form.email, class='form-control') }}
-                    </div>
+            <div class="col-md-2"></div>
+        </div>
+        <div class="row">
+            <div class="col-md-12"><br>&nbsp;</div>
+        </div>
+        <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-8">
+                <div class="input-group mb-3">
+                    {{  show_field(form.telefono, class='form-control')}}
                 </div>
-                <div class="col-md-2"></div>
             </div>
-            <div class="row">
-                <div class="col-md-12"><br>Espacio</div>
-            </div>
-            <div class="row">
-                <div class="col-md-2"></div>
-                <div class="col-md-8">
-                    <div class="input-group mb-3">
-                        {{  show_field(form.telefono, class='form-control')}}
-                    </div>
-                </div>
-                <div class="col-md-2"></div>
-            </div>
-            <div class="row">
-                <div class="col-md-12"><br>Espacio</div>
-            </div>
+            <div class="col-md-2"></div>
+        </div>
+        <div class="row">
+            <div class="col-md-12"><br>&nbsp;</div>
+        </div>
 
-            <div class="row">
-                <div class="col-md-2"></div>
-                <div class="col-md-8">
-                    <div class="input-group mb-3">
-                        {{  show_field(form.contrasenia, class='form-control') }}
-                    </div>
+        <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-8">
+                <div class="input-group mb-3">
+                    {{  show_field(form.contrasenia, class='form-control') }}
                 </div>
-                <div class="col-md-2"></div>
             </div>
-            <div class="row">
-                <div class="col-md-12"><br>Espacio</div>
-            </div>
-             <div class="row">
-                <div class="col-md-2"></div>
-                <div class="col-md-8">
-                    <select class="form-select" aria-label="Default select example">
-                        {{ show_field(form.rol, class='form-control' )}}
-                   </select>
+            <div class="col-md-2"></div>
+        </div>
+        <div class="row">
+            <div class="col-md-12"><br>&nbsp;</div>
+        </div>
+         <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-8">
+                <div class="input-group mb-3">
+                    {{ show_field(form.rol, class='form-control' )}}
                 </div>
-                <div class="col-md-2"></div>
             </div>
-            <div class="row">
-                <div class="col-md-12"><br><br>Espacio</div>
+            <div class="col-md-2"></div>
+        </div>
+        <div class="row">
+            <div class="col-md-12"><br><br>&nbsp;</div>
+        </div>
+        <div class="row">
+            <div class="col-md-5"></div>
+            <div class="col-md-3">
+                {{ show_submit(form.submit , class='btn btn-success')}}
             </div>
-            <div class="row">
-                <div class="col-md-5"></div>
-                <div class="col-md-3">
-	 			    {{ show_submit(form.submit , class='btn btn-success')}}
-                </div>
-                <div class="col-md-4"></div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">Espacio</div>
-            </div>
-        </form>
-    </div>
+            <div class="col-md-4"></div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">&nbsp;</div>
+        </div>
+    </form>
 {% endblock %}

@@ -3,7 +3,7 @@ from flask import request, jsonify
 from .. import db
 from main.models import BolsonesModels
 from main.auth.decoradores import admin_required, verificacion_token_revocado
-
+from datetime import datetime
 
 
 
@@ -12,8 +12,8 @@ from main.auth.decoradores import admin_required, verificacion_token_revocado
 
 
 class Bolsones(Resource):
-    @admin_required
-    @verificacion_token_revocado
+    #@admin_required
+    #@verificacion_token_revocado
     def get(self):
         pagina = 1
         cantidad_elementos = 10
@@ -29,6 +29,8 @@ class Bolsones(Resource):
                     bolsones = bolsones.filter(BolsonesModels.nombre == valor)
                 if clave == 'estado':
                     bolsones = bolsones.filter(BolsonesModels.estado == valor)
+                if clave == 'fecha':
+                    bolsones = bolsones.filter(BolsonesModels.fecha == datetime.strptime(valor, '%d/%m/%Y'))
         #bolsones = bolsones.orderby_by(BolsonesModels.fecha)
         #bolsones = bolsones.orderby_by(BolsonesModels.fecha.desc)
         bolsones = bolsones.paginate(pagina, cantidad_elementos, True, 30)
@@ -43,8 +45,8 @@ class Bolsones(Resource):
 
 
 class Bolson(Resource):
-    @admin_required
-    @verificacion_token_revocado
+    #@admin_required
+    #@verificacion_token_revocado
     def get(self,id):
        bolson = db.session.query(BolsonesModels).get_or_404(id)
        return bolson.hacia_json()
