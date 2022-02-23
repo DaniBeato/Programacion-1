@@ -135,8 +135,9 @@ def ingreso():
         else:
             flash('Usuario o contraseña incorrecta', 'danger')
     print(form.errors)
+    header = 'Ingreso'
     #return redirect(url_for('main.vista_principal'))
-    return render_template('/main/Ingreso(3).html', form=form)
+    return render_template('/main/Ingreso(3).html', form=form, header = header)
 
 
 

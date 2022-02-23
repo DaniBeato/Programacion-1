@@ -1,24 +1,12 @@
 {% extends './main/Main(sin_registro)(37).html' %}
 {% from 'macros/form.html' import show_field, show_submit %}
-
+{% import 'macros/header.html' as macro_header %}
 
 {% block body %}
+    {{ macro_header.show_header(header) }}
     <div class = "container-fluid">
         <form method="POST" action="{{ url_for('main.ingreso') }}" >
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-            <div class="row">
-                <div class="col-md-12">Espacio</div>
-            </div>
-            <div class="row">
-                <div class="col-md-5"></div>
-                <div class="col-md-6">
-                    <h1>Ingreso</h1>
-                </div>
-                <div class="col-md-1"></div>
-            </div>
-            <div class="row">
-                <div class="col-md-12"><br><br><br><br>Espacio</div>
-            </div>
             <div class="row">
                 <div class="col-md-2"></div>
                 <div class="col-md-8">

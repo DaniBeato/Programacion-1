@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, current_app, request
 import requests, json
 from .auth import admin_required
-from main.forms.filtro_forms import FiltroForm, BolsonForm
+#from main.forms.filtro_forms import FiltroForm, BolsonForm
 
 bolson = Blueprint('bolson', __name__, url_prefix = '/bolson')
 
