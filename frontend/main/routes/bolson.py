@@ -1,52 +1,86 @@
 from flask import Blueprint, render_template, redirect, url_for, current_app, request
 import requests, json
-from .auth import admin_required
-#from main.forms.filtro_forms import FiltroForm, BolsonForm
+from .auth import admin_required, admin_or_proveedor_required
+from main.forms.bolson_forms import BolsonFilter
+from main.forms.bolson_forms import BolsonForm
+from main.forms.producto_forms import ProductoForm
+from main.forms.producto_forms import ProductoFilter
+from datetime import datetime
+
 
 bolson = Blueprint('bolson', __name__, url_prefix = '/bolson')
 
-#@admin_required
+
 @bolson.route('/bolsones')
+@admin_required
 def bolsones():
-    #filter = FiltroForm(request.args,meta={'csrf': False})
+    filter = BolsonFilter(request.args, meta={'csrf': False})
     data = {}
-    #data['pagina'] = "1"
-    #data['cantidad_elementos'] = "1"
-    #auth = request.cookies['access_token']
+    data['pagina'] = "1"
+    data['cantidad_elementos'] = "5"
+    if 'pagina' in request.args:
+        #Si se han usado los botones de paginación cargar nueva página
+        data["pagina"] = request.args.get('pagina','')
+    if filter.submit():
+        filter_list_p = []
+        if filter.nombre.data != '':
+            data["nombre"] = filter.nombre.data
+            nombre = filter.nombre.data
+            filter_list_p.append(nombre)
+        print(filter.nombre.data)
+        if filter.estado.data != None and filter.estado.data != '':
+            data["estado"] = filter.estado.data
+            estado = filter.estado.data
+            filter_list_p.append(estado)
+        print(filter.estado.data)
+        if filter.desde.data != None:
+            data["desde"] = filter.desde.data.strftime('%d/%m/%Y')
+            desde = filter.desde.data.strftime('%d/%m/%Y')
+            filter_list_p.append(desde)
+        print(filter.desde.data)
+        if filter.hasta.data != None:
+            data["hasta"] = filter.hasta.data.strftime('%d/%m/%Y')
+            hasta = filter.hasta.data.strftime('%d/%m/%Y')
+            filter_list_p.append(hasta)
+        print(filter.hasta.data)
+    print(data)
+
+    auth = request.cookies['token_acceso']
     headers = {
         'content-type': "application/json",
-        'authorization': "Bearer "#+auth
+        'authorization': "Bearer {}".format(auth)
     }
-    print(headers)
+    #print(headers)
+
     r = requests.get(
         current_app.config["API_URL"] + '/bolsones',
         headers = headers,
         data = json.dumps(data))
+    if (r.status_code == 404) or (r.status_code == 401):
+        return redirect(url_for('main.vista_principal'))
 
-
-    #if filter.submit():
-        #if filter.nombre.data != None:
-            #data["nombre"] = filter.nombre.data
-        #if filter.fecha.data != None:
-            #data["fecha"] = filter.fecha.data
-        #if filter.estado.data != None :
-            #data["estado"] = filter.estado.data
-    print(r.text)
     bolsones = json.loads(r.text)['Bolsones']
-    print(bolsones[0]['nombre'])
+    #print(bolsones)
+    paginacion = {}
+    paginacion["cantidad_paginas"] = json.loads(r.text)["Cantidad de páginas"]
+    paginacion["pagina_actual"] = json.loads(r.text)["Página actual"]
+
+    #print(bolsones[0]['nombre'])
     header = "Lista de Bolsones"
     url = "bolson.bolson_"
-    ths_list = ["nombre", "estado"]
-    return render_template('/bolson/Bolsones_lista(7).html', objects = bolsones, header = header, url = url, ths_list = ths_list, first_dict = 0)
+    url_actual = "bolson.bolsones"
+    ths_list = ["nombre", "estado", "fecha"]
+    return render_template('/bolson/Bolsones_lista(7).html', objects = bolsones, header = header, url = url,
+    ths_list = ths_list, first_dict = 0, paginacion = paginacion, filter = filter, filter_list_p = filter_list_p, url_actual = url_actual)
 
 
-#@admin_required
+@admin_required
 @bolson.route('/bolson/<int:id>')
 def bolson_(id):
-    #auth = request.cookies['access_token']
+    auth = request.cookies['token_acceso']
     headers = {
         'content-type': "application/json",
-        'authorization': "Bearer " #+ auth
+        'authorization': "Bearer {}".format(auth)
         }
     r = requests.get(
         current_app.config["API_URL"]+'/bolson/'+str(id),
@@ -58,65 +92,69 @@ def bolson_(id):
     return render_template('/bolson/Bolson(8).html', object = bolson, header = header)
 
 
-#@admin_required
-@bolson.route('/bolsones_pendientes')
+@admin_or_proveedor_required
+@bolson.route('/bolsones_pendientes', methods=['POST', "GET"])
 def bolsones_pendientes():
+    filter = BolsonFilter(request.args, meta={'csrf': False})
     data = {}
-    #data['pagina'] = "1"
-    #data['cantidad_elementos'] = "1"
-    #auth = request.cookies['access_token']
+    data['pagina'] = "1"
+    data['cantidad_elementos'] = "5"
+    if 'pagina' in request.args:
+        # Si se han usado los botones de paginación cargar nueva página
+        data["pagina"] = request.args.get('pagina', '')
+    if filter.submit():
+        filter_list_p = []
+        if filter.nombre.data != '':
+            data["nombre"] = filter.nombre.data
+            nombre = filter.nombre.data
+            filter_list_p.append(nombre)
+        #print(filter.nombre.data)
+        if filter.desde.data != None:
+            data["desde"] = filter.desde.data.strftime('%d/%m/%Y')
+            desde = filter.desde.data.strftime('%d/%m/%Y')
+            filter_list_p.append(desde)
+        #print(filter.desde.data)
+        if filter.hasta.data != None:
+            data["hasta"] = filter.hasta.data.strftime('%d/%m/%Y')
+            hasta = filter.hasta.data.strftime('%d/%m/%Y')
+            filter_list_p.append(hasta)
+        #print(filter.hasta.data)
+    #print(data)
+
+    auth = request.cookies['token_acceso']
     headers = {
         'content-type': "application/json",
-        'authorization': "Bearer " #+ auth
+        'authorization': "Bearer {}".format(auth)
     }
+
     r = requests.get(
         current_app.config["API_URL"] + '/bolsones-pendientes',
         headers = headers,
         data = json.dumps(data))
-    print(r.text)
+    #print(r.text)
     bolsones_pendientes = json.loads(r.text)['Bolsones Pendientes']
-    print(bolsones_pendientes)
+    paginacion = {}
+    paginacion["cantidad_paginas"] = json.loads(r.text)["Cantidad de páginas"]
+    paginacion["pagina_actual"] = json.loads(r.text)["Página actual"]
+    print(paginacion)
+    #print(bolsones_pendientes)
     header = 'Lista de Bolsones Pendientes'
     url = "bolson.bolson_pendiente"
-    ths_list = ["nombre", "estado"]
-    return render_template('/bolson/Bolsones_pendientes_lista(admin)(38).html', objects = bolsones_pendientes, header = header, url = url, ths_list = ths_list, first_dict = 0)
-    #feature = "nombre"
+    url_actual = "bolson.bolsones_pendientes"
+    ths_list = ["nombre", "estado", "fecha"]
+    return render_template('/bolson/Bolsones_pendientes_lista(admin)(38).html', objects = bolsones_pendientes, header = header, url = url,
+                           ths_list = ths_list, first_dict = 0, paginacion = paginacion, filter = filter, filter_list_p = filter_list_p, url_actual = url_actual)
     #return render_template('/bolson/Bolsones_pendientes_lista(9).html', header = header, objects = bolsones_pendientes, url = url, feature = feature)
 
-    '''
 
-    #filter = BolsonPendienteFilterForm(request.args, meta={'csrf': False})
-    data = {}
-    #data['page'] = 1
-    #data['per_page'] = 10
-    #if 'page' in request.args:
-    #    data["page"] = request.args.get('page', '')
-    #if filter.submit():
-    #    if filter.yearFrom.data != None:
-    #        data["year[gte]"] = filter.yearFrom.data.year
-    #    if filter.yearTo.data != None:
-    #        data["year[lte]"] = filter.yearTo.data.year
-    #    print(filter.professorId.data)
 
-    r = requests.get(
-        current_app.config["API_URL"] + '/bolson',
-        headers=headers,
-        data=json.dumps(data))
-    bolsones_pendientes = json.loads(r.text)["Bolsones"]
-    #pagination = {}
-    #pagination["pages"] = json.loads(r.text)["pages"]
-    #pagination["current_page"] = json.loads(r.text)["page"]
-    #return render_template('/bolson/Bolson_pendiente(10).html', bolsones=bolsones, pagination=pagination, filter=filter)
-    return render_template('/bolson/Bolsones_pendientes_lista(admin)(38).html', items=bolsones_pendientes)
-    '''
-
-#@admin_required
+@admin_or_proveedor_required
 @bolson.route('/bolson_pendiente/<int:id>')
 def bolson_pendiente(id):
-    #auth = request.cookies['access_token']
+    auth = request.cookies['token_acceso']
     headers = {
         'content-type': "application/json",
-        'authorization': "Bearer " #+ auth
+        'authorization': "Bearer {}".format(auth)
     }
     r = requests.get(
         current_app.config["API_URL"] + '/bolson-pendiente/' + str(id),
@@ -124,85 +162,126 @@ def bolson_pendiente(id):
     if (r.status_code == 404) or (r.status_code == 400):
         return redirect(url_for('bolson.bolsones_pendientes'))
     bolson_pendiente = json.loads(r.text)
+    print(bolson_pendiente)
     header = 'Bolsón Pendiente'
     return render_template('/bolson/Bolson_pendiente(10).html', object = bolson_pendiente, header = header)
 
 
 
-#@admin_required
-@bolson.route('/crear_editar_bolson_pendiente', methods=['POST', "GET"])
-def crear_editar_bolson_pendiente():
+@admin_required
+@bolson.route('/crear_editar_bolson_pendiente/<int:id>', methods=['POST', "GET", "PUT"])
+def crear_editar_bolson_pendiente(id):
     form = BolsonForm()  # Instanciar formulario
     if form.validate_on_submit():  # Si el formulario ha sido enviado y es validado correctamente
         data = {}
         data["nombre"] = form.nombre.data
         data["estado"] = form.estado.data
-        data["fecha"] = form.fecha.data
+        data["fecha"] = form.fecha.data.strftime('%d/%m/%Y')
         print(data)
-        # auth = request.cookies['access_token']
+        auth = request.cookies['token_acceso']
         headers = {
             'content-type': "application/json",
-            'authorization': "Bearer"  # + auth
+            'authorization': "Bearer {}".format(auth)
         }
-        r = requests.post(
-            current_app.config["API_URL"] + '/bolsones-pendientes',
-            headers=headers,
-            data=json.dumps(data))
-        return redirect(url_for('bolson.bolsones'))  # Redirecciona a lista
-    data = {}
-    # data['pagina'] = "1"
-    # data['cantidad_elementos'] = "1"
-    # auth = request.cookies['access_token']
-    headers = {
-        'content-type': "application/json",
-        'authorization': "Bearer "  # + auth
-    }
-    r = requests.get(
-        current_app.config["API_URL"] + '/bolsones-pendientes',
-        headers=headers,
-        data=json.dumps(data))
-    print(r.text)
-    bolsones_pendientes = json.loads(r.text)['Bolsones Pendientes']
-    print(bolsones_pendientes)
-    header = 'Crear/Editar Bolsones Pendientes'
-    features = ["nombre", "estado", "fecha"]
-    return render_template('/bolson/Crear-editar_bolson_pendiente(32).html', objects=bolsones_pendientes, header=header,
-                           features=features, first_dict=0)
+        if id == 0:
+            r = requests.post(
+                current_app.config["API_URL"] + '/bolsones-pendientes',
+                headers=headers,
+                data=json.dumps(data))
+            print(r.text)
+            return redirect(url_for('bolson.bolsones_pendientes'))  # Redirecciona a lista
+        else:
+            r = requests.put(
+                current_app.config["API_URL"] + '/bolson-pendiente/' + str(id),
+                headers=headers,
+                data=json.dumps(data))
+            print(r.text)
+            return redirect(url_for('bolson.bolsones_pendientes'))
+    else:
+        if id == 0:
+            header = 'Crear Bolsón Pendiente'
+            return render_template('/bolson/Crear-editar_bolson_pendiente(32).html',id = 0, form=form, header=header)
+        else:
+            auth = request.cookies['token_acceso']
+            header = 'Editar Bolsón Pendiente'
+            headers = {
+                'content-type': "application/json",
+                'authorization': "Bearer {}".format(auth)
+            }
+            r = requests.get(
+                current_app.config["API_URL"] + '/bolson-pendiente/' + str(id),
+                headers=headers)
+            bolson_pendiente = json.loads(r.text)
+            print(bolson_pendiente)
+            return render_template('/bolson/Crear-editar_bolson_pendiente(32).html', id = bolson_pendiente['id'],  form = form, header=header)
 
 
-
-
-
-#@admin_required
+@admin_required
 @bolson.route('/bolsones_previos')
 def bolsones_previos():
+    filter = BolsonFilter(request.args, meta={'csrf': False})
     data = {}
-    #data['pagina'] = "1"
-    #data['cantidad_elementos'] = "1"
-    #auth = request.cookies['access_token']
+    data['pagina'] = "1"
+    data['cantidad_elementos'] = "5"
+    if 'pagina' in request.args:
+        # Si se han usado los botones de paginación cargar nueva página
+        data["pagina"] = request.args.get('pagina', '')
+    if filter.submit():
+        filter_list_p = []
+        if filter.nombre.data != '':
+            data["nombre"] = filter.nombre.data
+            nombre = filter.nombre.data
+            filter_list_p.append(nombre)
+        print(filter.nombre.data)
+        if filter.estado.data != None and filter.estado.data != '':
+            data["estado"] = filter.estado.data
+            estado = filter.estado.data
+            filter_list_p.append(estado)
+        print(filter.estado.data)
+        if filter.desde.data != None:
+            data["desde"] = filter.desde.data.strftime('%d/%m/%Y')
+            desde = filter.desde.data.strftime('%d/%m/%Y')
+            filter_list_p.append(desde)
+        print(filter.desde.data)
+        if filter.hasta.data != None:
+            data["hasta"] = filter.hasta.data.strftime('%d/%m/%Y')
+            hasta = filter.hasta.data.strftime('%d/%m/%Y')
+            filter_list_p.append(hasta)
+        print(filter.hasta.data)
+    print(data)
+
+    auth = request.cookies['token_acceso']
     headers = {
         'content-type': "application/json",
-        'authorization': "Bearer " #+ auth
+        'authorization': "Bearer {}".format(auth)
     }
+    # print(headers)
+
     r = requests.get(
         current_app.config["API_URL"] + '/bolsones-previos',
-        headers = headers,
-        data = json.dumps(data))
-    print(r.text)
+        headers=headers,
+        data=json.dumps(data))
+
     bolsones_previos = json.loads(r.text)['Bolsones Previos']
+    paginacion = {}
+    paginacion["cantidad_paginas"] = json.loads(r.text)["Cantidad de páginas"]
+    paginacion["pagina_actual"] = json.loads(r.text)["Página actual"]
+
     header = "Lista de Bolsones Previos"
     url = "bolson.bolson_previo"
-    ths_list = ["nombre", "estado"]
-    return render_template('/bolson/Bolsones_previos_lista(11).html', objects = bolsones_previos, header = header ,url = url, ths_list = ths_list, first_dict = 0)
+    ths_list = ["nombre", "estado", "fecha"]
+    url_actual = "bolson.bolsones_previos"
+    return render_template('/bolson/Bolsones_previos_lista(11).html', objects = bolsones_previos, header = header ,url = url, ths_list = ths_list, first_dict = 0,
+                           paginacion = paginacion, filter = filter, filter_list_p = filter_list_p, url_actual = url_actual)
 
 
-#@admin_required
+@admin_required
 @bolson.route('/bolson_previo/<int:id>')
 def bolson_previo(id):
-    #auth = request.cookies['access_token']
+    auth = request.cookies['token_acceso']
     headers = {
         'content-type': "application/json",
-        'authorization': "Bearer " #+ auth
+        'authorization': "Bearer {}".format(auth)
     }
     r = requests.get(
         current_app.config["API_URL"] + '/bolson-previo/' + str(id),
@@ -214,37 +293,62 @@ def bolson_previo(id):
     return render_template('/bolson/Bolson_previo(12).html', object = bolson_previo, header = header)
 
 
-#@admin_required
+@admin_required
 @bolson.route('/bolsones_en_venta')
 def bolsones_en_venta():
+    filter = BolsonFilter(request.args, meta={'csrf': False})
     data = {}
-    #data['pagina'] = "1"
-    #data['cantidad_elementos'] = "1"
-    #auth = request.cookies['access_token']
+    data['pagina'] = "1"
+    data['cantidad_elementos'] = "5"
+    if 'pagina' in request.args:
+        # Si se han usado los botones de paginación cargar nueva página
+        data["pagina"] = request.args.get('pagina', '')
+    if filter.submit():
+        filter_list_p = []
+        if filter.nombre.data != '':
+            data["nombre"] = filter.nombre.data
+            nombre = filter.nombre.data
+            filter_list_p.append(nombre)
+        print(filter.nombre.data)
+    print(data)
+
+    auth = request.cookies['token_acceso']
     headers = {
         'content-type': "application/json",
-        'authorization': "Bearer " #+ auth
+        'authorization': "Bearer {}".format(auth)
     }
+    # print(headers)
+
     r = requests.get(
         current_app.config["API_URL"] + '/bolsones-venta',
-        headers = headers,
-        data = json.dumps(data))
+        headers=headers,
+        data=json.dumps(data))
+
     print(r.text)
     bolsones_venta = json.loads(r.text)['Bolsones Venta']
+    # print(bolsones)
+    paginacion = {}
+    paginacion["cantidad_paginas"] = json.loads(r.text)["Cantidad de páginas"]
+    paginacion["pagina_actual"] = json.loads(r.text)["Página actual"]
+
     header = "Bolsones en Venta"
     url = "bolson.bolson_en_venta"
     feature = "nombre"
-    return render_template('/bolson/Bolsones_venta(cliente)_lista(13).html', header = header, objects = bolsones_venta, url = url, feature = feature)
+    url_actual = "bolson.bolsones_en_venta"
+    print(bolsones_venta)
+
+    return render_template('/bolson/Bolsones_venta(cliente)_lista(13).html', header = header, objects = bolsones_venta, url = url, feature = feature,
+                           paginacion = paginacion, filter = filter, filter_list_p = filter_list_p, url_actual = url_actual)
     #ths_list = ["nombre", "estado"]
     #return render_template('/bolson/Bolsones_venta(admin)_lista(15).html', objects = bolsones_venta, header = header ,url = url, ths_list = ths_list, first_dict = 0)
 
-#@admin_required
+@admin_required
 @bolson.route('/bolson_en_venta/<int:id>')
 def bolson_en_venta(id):
-    #auth = request.cookies['access_token']
+    auth = request.cookies['token_acceso']
     headers = {
         'content-type': "application/json",
-        'authorization': "Bearer " #+ auth
+        'authorization': "Bearer {}".format(auth)
     }
     r = requests.get(
         current_app.config["API_URL"] + '/bolson-venta/' + str(id),
@@ -257,36 +361,57 @@ def bolson_en_venta(id):
     return render_template('/bolson/Bolson_venta(cliente)(14).html', object = bolson_venta, header = header)
 
 
-#@admin_required
 @bolson.route('/productos')
 def productos():
+    filter = ProductoFilter(request.args, meta={'csrf': False})
     data = {}
-    #data['pagina'] = "1"
-    #data['cantidad_elementos'] = "1"
-    #auth = request.cookies['access_token']
+    data['pagina'] = "1"
+    data['cantidad_elementos'] = "5"
+    if 'pagina' in request.args:
+        # Si se han usado los botones de paginación cargar nueva página
+        data["pagina"] = request.args.get('pagina', '')
+    if filter.submit():
+        filter_list_p = []
+        if filter.nombre.data != '':
+            data["nombre"] = filter.nombre.data
+            nombre = filter.nombre.data
+            filter_list_p.append(nombre)
+        print(filter.nombre.data)
+    print(data)
+
+    auth = request.cookies['token_acceso']
     headers = {
         'content-type': "application/json",
-        'authorization': "Bearer " #+ auth
+        'authorization': "Bearer {}".format(auth)
     }
+    # print(headers)
+
     r = requests.get(
         current_app.config["API_URL"] + '/productos',
-        headers = headers,
-        data = json.dumps(data))
+        headers=headers,
+        data=json.dumps(data))
     print(r.text)
     productos = json.loads(r.text)['Productos']
+
+    paginacion = {}
+    paginacion["cantidad_paginas"] = json.loads(r.text)["Cantidad de páginas"]
+    paginacion["pagina_actual"] = json.loads(r.text)["Página actual"]
+
     header = 'Lista de Productos'
     url = 'bolson.producto'
     ths_list = ['nombre', 'id']
-    return render_template('/bolson/Productos_lista(21).html', objects = productos, url = url, header = header, ths_list = ths_list, first_dict = 0)
+    url_actual = 'bolson.productos'
+    return render_template('/bolson/Productos_lista(21).html', objects = productos, url = url, header = header, ths_list = ths_list, first_dict = 0,
+                           paginacion = paginacion, filter = filter, filter_list_p = filter_list_p, url_actual = url_actual)
 
 
-#@admin_required
+
 @bolson.route('/producto/<int:id>')
 def producto(id):
-    #auth = request.cookies['access_token']
+    auth = request.cookies['token_acceso']
     headers = {
         'content-type': "application/json",
-        'authorization': "Bearer " #+ auth
+        'authorization': "Bearer " "Bearer {}".format(auth)
     }
     r = requests.get(
         current_app.config["API_URL"] + '/producto/' + str(id),
@@ -300,26 +425,55 @@ def producto(id):
 
 
 
-#@admin_required
-@bolson.route('/crear_editar_producto')
-def crear_editar_producto():
-    data = {}
-    # data['pagina'] = "1"
-    # data['cantidad_elementos'] = "1"
-    # auth = request.cookies['access_token']
-    headers = {
-        'content-type': "application/json",
-        'authorization': "Bearer "  # + auth
-    }
-    r = requests.get(
-        current_app.config["API_URL"] + '/productos',
-        headers=headers,
-        data=json.dumps(data))
-    print(r.text)
-    productos = json.loads(r.text)['Productos']
-    header = 'Crear/Editar Producto'
-    features = ['nombre', 'usuario_ID']
-    return render_template('/bolson/Crear-editar_producto(33).html', objects = productos, header = header, features = features, first_dict = 0)
+@admin_or_proveedor_required
+@bolson.route('/crear_editar_producto/<int:id>',  methods=['POST', "GET", "PUT"])
+def crear_editar_producto(id):
+    form = ProductoForm()  # Instanciar formulario
+    if form.validate_on_submit():  # Si el formulario ha sido enviado y es validado correctamente
+        data = {}
+        data["nombre"] = form.nombre.data
+        data["usuario_ID"] = form.usuario_ID.data
+        print(data)
+        auth = request.cookies['token_acceso']
+        headers = {
+            'content-type': "application/json",
+            'authorization': "Bearer {}".format(auth)
+        }
+        if id == 0:
+            r = requests.post(
+                current_app.config["API_URL"] + '/productos',
+                headers=headers,
+                data=json.dumps(data))
+            print('data', data)
+            print('request', r.text)
+            print('token', auth)
+            print('headers', headers)
+            return redirect(url_for('bolson.productos'))  # Redirecciona a lista
+        else:
+            r = requests.put(
+                current_app.config["API_URL"] + '/producto/' + str(id),
+                headers=headers,
+                data=json.dumps(data))
+            print(r.text)
+            return redirect(url_for('bolson.productos'))
+    else:
+        if id == 0:
+            header = 'Crear Producto'
+            return render_template('/bolson/Crear-editar_producto(33).html', id=0, form=form, header=header)
+        else:
+            header = 'Editar Producto'
+            auth = request.cookies['token_acceso']
+            headers = {
+                'content-type': "application/json",
+                'authorization': "Bearer {}".format(auth)
+            }
+            r = requests.get(
+                current_app.config["API_URL"] + '/producto/' + str(id),
+                headers=headers)
+            producto = json.loads(r.text)
+            print(producto)
+            return render_template('/bolson/Crear-editar_producto(33).html', id=producto['id'],
+                                   form=form, header=header)
 
 
 

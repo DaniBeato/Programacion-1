@@ -20,9 +20,8 @@ class BolsonesVenta(Resource):
                     cantidad_elementos = int(valor)
                 if clave == 'nombre':
                     bolsones_venta = bolsones_venta.filter(BolsonesModels.nombre == valor)
-                if clave == 'estado':
-                    bolsones_venta = bolsones_venta.filter(BolsonesModels.estado == valor)
         bolsones_venta = bolsones_venta.filter(BolsonesModels.fecha >= fecha_vencimiento).filter(BolsonesModels.estado == True)
+        bolsones_venta = bolsones_venta.order_by((BolsonesModels.fecha).desc())
         bolsones_venta = bolsones_venta.paginate(pagina, cantidad_elementos, True, 30)
         return jsonify({'Bolsones Venta': [bolson_venta.hacia_json() for bolson_venta in bolsones_venta.items],
                         'Cantidad total de bolsones en venta': bolsones_venta.total,

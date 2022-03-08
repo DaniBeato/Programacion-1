@@ -3,12 +3,12 @@ from flask import request, jsonify
 from .. import db
 from main.models import UsuariosModels
 from main.auth.decoradores import admin_required, cliente_required, admin_or_cliente_required, verificacion_token_revocado
-
+from werkzeug.security import generate_password_hash
 
 
 class Clientes(Resource):
-    #@admin_required
-    #@verificacion_token_revocado
+    @admin_required
+    @verificacion_token_revocado
     def get(self):
         pagina = 1
         cantidad_elementos = 10
@@ -37,27 +37,29 @@ class Clientes(Resource):
 
 
 class Cliente(Resource):
-    #@admin_required
-    #@verificacion_token_revocado
+    @admin_or_cliente_required
+    @verificacion_token_revocado
     def get(self, id):
         cliente = db.session.query(UsuariosModels).get_or_404(id)
         if cliente.rol == 'cliente':
             return cliente.hacia_json()
 
-    #@cliente_required
-    #@verificacion_token_revocado
+    @admin_or_cliente_required
+    @verificacion_token_revocado
     def put(self, id):
         cliente = db.session.query(UsuariosModels).get_or_404(id)
         if cliente.rol == 'cliente':
             datos = request.get_json().items()
             for clave, valor in datos:
+                if clave == "contrasenia":
+                    valor = generate_password_hash(valor)
                 setattr(cliente, clave, valor)
             db.session.add(cliente)
             db.session.commit()
             return cliente.hacia_json()
 
-    #@admin_or_cliente_required
-    #@verificacion_token_revocado
+    @admin_or_cliente_required
+    @verificacion_token_revocado
     def delete(self, id):
         cliente = db.session.query(UsuariosModels).get_or_404(id)
         if cliente.rol == 'cliente':

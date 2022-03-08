@@ -19,7 +19,7 @@ def admin_required(fn):
         if claims['rol'] == "admin":
             return fn(*args, **kwargs)
         else:
-            return 'Solo administradores tienen acceso', 403
+            return 'Solo administradores tienen acceso', 404
     return wrapper
 
 
@@ -32,7 +32,7 @@ def proveedor_required(fn):
         if claims['rol'] == "proveedor":
             return fn(*args, **kwargs)
         else:
-            return 'Solo proveedores tienen acceso'
+            return 'Solo proveedores tienen acceso', 404
     return wrapper
 
 
@@ -46,7 +46,7 @@ def cliente_required(fn):
         if claims['rol'] == "cliente":
             return fn(*args, **kwargs)
         else:
-            return 'Solo clientes tienen acceso'
+            return 'Solo clientes tienen acceso', 404
     return wrapper
 
 
@@ -63,7 +63,7 @@ def admin_or_proveedor_required(fn):
             if claims['rol'] == "proveedor":
                 return fn(*args, **kwargs)
             else:
-                return 'Solo administradores o proveedores tienen acceso'
+                return 'Solo administradores o proveedores tienen acceso', 404
     return wrapper
 
 
@@ -79,7 +79,7 @@ def admin_or_cliente_required(fn):
             if claims['rol'] == "cliente":
                 return fn(*args, **kwargs)
             else:
-                return 'Solo administradores o clientes tienen acceso'
+                return 'Solo administradores o clientes tienen acceso', 404
     return wrapper
 
 
@@ -105,7 +105,7 @@ def verificacion_token_revocado(fn):
         jti = claims["jti"]
         token = db.session.query(Token_revocadoModels.id).filter_by(jti = jti).scalar()
         if token:
-            return 'Este token es inválido porque el usuario ha cerrado sesión', 405
+            return 'Este token es inválido porque el usuario ha cerrado sesión', 404
         else:
             return fn(*args, **kwargs)
     return wrapper

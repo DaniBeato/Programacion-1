@@ -2,6 +2,7 @@ from flask_restful import Resource
 from flask import request, jsonify
 from .. import db
 from main.models import UsuariosModels
+from werkzeug.security import generate_password_hash
 from main.auth.decoradores import admin_required, verificacion_token_revocado
 
 
@@ -9,8 +10,8 @@ from main.auth.decoradores import admin_required, verificacion_token_revocado
 
 
 class Administradores(Resource):
-    #@admin_required
-    #@verificacion_token_revocado
+    @admin_required
+    @verificacion_token_revocado
     def get(self):
         pagina = 1
         cantidad_elementos = 10
@@ -39,27 +40,29 @@ class Administradores(Resource):
 
 
 class Administrador(Resource):
-    #@admin_required
-    #@verificacion_token_revocado
+    @admin_required
+    @verificacion_token_revocado
     def get(self, id):
         administrador = db.session.query(UsuariosModels).get_or_404(id)
         if administrador.rol == 'admin':
             return administrador.hacia_json()
 
-    #@admin_required
-    #@verificacion_token_revocado
+    @admin_required
+    @verificacion_token_revocado
     def put(self, id):
         administrador = db.session.query(UsuariosModels).get_or_404(id)
         if administrador.rol == 'admin':
             datos = request.get_json().items()
             for clave, valor in datos:
+                if clave == 'contrasenia':
+                    valor = generate_password_hash(valor)
                 setattr(administrador, clave, valor)
             db.session.add(administrador)
             db.session.commit()
             return administrador.hacia_json()
 
-    #@admin_required
-    #@verificacion_token_revocado
+    @admin_required
+    @verificacion_token_revocado
     def delete(self, id):
         administrador = db.session.query(UsuariosModels).get_or_404(id)
         if administrador.rol == 'admin':

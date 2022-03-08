@@ -5,3 +5,4 @@ email_validator
 requests
 flask-login
 PyJWT==2.1.0
+flask-jwt-extended

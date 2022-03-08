@@ -10,6 +10,7 @@ import os
 
 
 
+
 auth = Blueprint('auth', __name__, url_prefix = '/auth')
 
 
@@ -19,7 +20,7 @@ def login():
     if usuario.validacion_contrasenia(request.get_json().get("contrasenia")):
         token_acceso = create_access_token(identity = usuario)
         datos = {
-            'id': str(usuario.id),
+            'id': usuario.id,
             'mail': usuario.mail,
             'token_acceso': token_acceso,
             'rol': usuario.rol
@@ -49,7 +50,7 @@ def register():
 
 
 @auth.route("/logout/<id>", methods = ["DELETE"])
-#@jwt_required()
+@jwt_required()
 def logout(id):
     now = datetime.now()
     tokens = db.session.query(Token_revocadoModels).all()

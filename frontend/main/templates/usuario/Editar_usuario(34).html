@@ -1,12 +1,12 @@
 {% extends './main/Main(sin_registro)(37).html' %}
-{% from 'macros/form.html' import show_field, show_submit %}
 {% import 'macros/header.html' as macro_header %}
+{% from 'macros/form.html' import show_field, show_submit %}
 
 
 {% block body %}
     <div class ="container-fluid">
         {{ macro_header.show_header(header) }}
-        <form method="POST" action="{{ url_for('main.registro') }}" >
+        <form method="POST" action="{{ url_for(url, id = id) }}" >
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
             <div class="row">
                 <div class="col-md-2"></div>
@@ -36,7 +36,7 @@
                 <div class="col-md-2"></div>
                 <div class="col-md-8">
                     <div class="input-group mb-3">
-                        {{  show_field(form.mail, class='form-control') }}
+                        {{  show_field(form.email, class='form-control') }}
                     </div>
                 </div>
                 <div class="col-md-2"></div>

@@ -3,13 +3,13 @@ from flask import request, jsonify
 from .. import db
 from main.models import BolsonesModels
 from main.auth.decoradores import admin_required, proveedor_required, admin_or_proveedor_required, verificacion_token_revocado
-
+from datetime import datetime
 
 
 
 class BolsonesPendientes(Resource):
-    #@admin_or_proveedor_required
-    #@verificacion_token_revocado
+    @admin_or_proveedor_required
+    @verificacion_token_revocado
     def get(self):
         pagina = 1
         cantidad_elementos = 10
@@ -23,17 +23,20 @@ class BolsonesPendientes(Resource):
                     cantidad_elementos = int(valor)
                 if clave == 'nombre':
                     bolsones_pendientes = bolsones_pendientes.filter(BolsonesModels.nombre == valor)
-                if clave == 'estado':
-                    bolsones_pendientes = bolsones_pendientes.filter(BolsonesModels.estado == valor)
+                if clave == 'desde':
+                    bolsones_pendientes = bolsones_pendientes.filter(BolsonesModels.fecha >= datetime.strptime(valor, '%d/%m/%Y'))
+                if clave == 'hasta':
+                    bolsones_pendientes = bolsones_pendientes.filter(BolsonesModels.fecha <= datetime.strptime(valor, '%d/%m/%Y'))
         bolsones_pendientes = bolsones_pendientes.filter(BolsonesModels.estado == False)
+        bolsones_pendientes = bolsones_pendientes.order_by(BolsonesModels.fecha)
         bolsones_pendientes = bolsones_pendientes.paginate(pagina, cantidad_elementos, True, 30)
         return jsonify({'Bolsones Pendientes': [bolson_pendiente.hacia_json() for bolson_pendiente in bolsones_pendientes.items],
                         'Cantidad total de bolsones pendientes': bolsones_pendientes.total,
                         'Cantidad de páginas': bolsones_pendientes.pages,
                         'Página actual': pagina
                         })
-    #@admin_required
-    #@verificacion_token_revocado
+    @admin_required
+    @verificacion_token_revocado
     def post(self):
         bolson_pendiente = BolsonesModels.desde_json(request.get_json())
         db.session.add(bolson_pendiente)
@@ -44,8 +47,8 @@ class BolsonesPendientes(Resource):
 
 
 class BolsonPendiente(Resource):
-    #@admin_or_proveedor_required
-    #@verificacion_token_revocado
+    @admin_or_proveedor_required
+    @verificacion_token_revocado
     def get(self, id):
         bolson_pendiente = db.session.query(BolsonesModels).get_or_404(id)
         if bolson_pendiente.estado == False:
@@ -53,8 +56,8 @@ class BolsonPendiente(Resource):
         else:
             return 'Este bolsón se encuentra aprobado', 400
 
-    #@admin_required
-    #@verificacion_token_revocado
+    @admin_required
+    @verificacion_token_revocado
     def delete(self, id):
         bolson_pendiente = db.session.query(BolsonesModels).get_or_404(id)
         if bolson_pendiente.estado == False:
@@ -64,13 +67,15 @@ class BolsonPendiente(Resource):
         else:
             return 'Este bolsón se encuentra aprobado'
 
-    #@admin_required
-    #@verificacion_token_revocado
+    @admin_required
+    @verificacion_token_revocado
     def put(self, id):
         bolson_pendiente = db.session.query(BolsonesModels).get_or_404(id)
         if bolson_pendiente.estado == False:
             datos = request.get_json().items()
             for clave, valor in datos:
+                if clave == 'fecha':
+                    valor = datetime.strptime(valor, '%d/%m/%Y')
                 setattr(bolson_pendiente, clave, valor)
             db.session.add(bolson_pendiente)
             db.session.commit()

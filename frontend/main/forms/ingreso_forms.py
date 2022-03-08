@@ -6,13 +6,13 @@ from wtforms import validators #Importa validaciones
 
 class IngresoForm(FlaskForm):
 
-    email = EmailField('E-mail',
+    mail = EmailField('Mail',
         [
-            validators.Required(message="Debe introducir un email"),
+            validators.Required(message="Debe introducir un mail"),
             validators.Email(message='Formato inválido'),
         ])
 
-    contrasenia = StringField('Contraseña',
+    contrasenia = PasswordField('Contraseña',
         [
             validators.required(message='Debe introducir una contraseña'),
             validators.Length(min=3)

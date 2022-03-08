@@ -2,11 +2,27 @@
 {% import 'macros/table.html' as macro_table %}
 {% import 'macros/header.html' as macro_header %}
 {% import 'macros/pagination.html' as macro_pagination %}
+{% from 'macros/form.html' import show_field, show_submit %}
+
 
 {% block body %}
     <div class ="container-fluid">
         {{ macro_header.show_header(header) }}
+        <div class="row">
+            <div class="col-md-12">
+                <form method="GET" action="{{ url_for(url_actual) }}" >
+                    <div class="form-row">
+                        <div class="form-group col-md-1">
+                            {{ show_field(filter.nombre , class='form-control')}}
+                        </div>
+                        <div class="form-group col-md-2" style="margin-top:30px">
+                            {{ show_submit(filter.submit , class='btn btn-success')}}
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
         {{ macro_table.show_rows(objects, url, ths_list, first_dict) }}
-        {{ macro_pagination.show_pagination() }}
+        {{ macro_pagination.show_pagination(url_actual, paginacion, filter_list_p) }}
     </div>
 {% endblock %}

@@ -12,11 +12,11 @@ from datetime import datetime
 
 
 class Bolsones(Resource):
-    #@admin_required
-    #@verificacion_token_revocado
+    @admin_required
+    @verificacion_token_revocado
     def get(self):
         pagina = 1
-        cantidad_elementos = 10
+        cantidad_elementos = 30
         filtros = request.data
         bolsones = db.session.query(BolsonesModels)
         if filtros:
@@ -29,9 +29,11 @@ class Bolsones(Resource):
                     bolsones = bolsones.filter(BolsonesModels.nombre == valor)
                 if clave == 'estado':
                     bolsones = bolsones.filter(BolsonesModels.estado == valor)
-                if clave == 'fecha':
-                    bolsones = bolsones.filter(BolsonesModels.fecha == datetime.strptime(valor, '%d/%m/%Y'))
-        #bolsones = bolsones.orderby_by(BolsonesModels.fecha)
+                if clave == 'desde':
+                    bolsones = bolsones.filter(BolsonesModels.fecha >= datetime.strptime(valor, '%d/%m/%Y'))
+                if clave == 'hasta':
+                    bolsones = bolsones.filter(BolsonesModels.fecha <= datetime.strptime(valor, '%d/%m/%Y'))
+        bolsones = bolsones.order_by(BolsonesModels.fecha)
         #bolsones = bolsones.orderby_by(BolsonesModels.fecha.desc)
         bolsones = bolsones.paginate(pagina, cantidad_elementos, True, 30)
         return jsonify({'Bolsones': [bolson.hacia_json() for bolson in bolsones.items],
@@ -45,8 +47,8 @@ class Bolsones(Resource):
 
 
 class Bolson(Resource):
-    #@admin_required
-    #@verificacion_token_revocado
+    @admin_required
+    @verificacion_token_revocado
     def get(self,id):
        bolson = db.session.query(BolsonesModels).get_or_404(id)
        return bolson.hacia_json()

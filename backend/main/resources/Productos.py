@@ -7,10 +7,10 @@ from main.auth.decoradores import admin_required, proveedor_required, admin_or_p
 
 class Productos(Resource):
     #@admin_or_proveedor_required
-    #@verificacion_token_revocado
+    @verificacion_token_revocado
     def get(self):
         pagina = 1
-        cantidad_elementos = 10
+        cantidad_elementos = 30
         filtros = request.data
         productos = db.session.query(ProductosModels)
         if filtros:
@@ -29,8 +29,8 @@ class Productos(Resource):
                         })
 
 
-    #@proveedor_required
-    #@verificacion_token_revocado
+    @admin_or_proveedor_required
+    @verificacion_token_revocado
     def post(self):
         producto = ProductosModels.desde_json(request.get_json())
         db.session.add(producto)
@@ -41,10 +41,10 @@ class Productos(Resource):
 class Producto(Resource):
     def get(self, id):
         producto = db.session.query(ProductosModels).get_or_404(id)
-        return producto.hacia_json()
+        return producto.hacia_json(), 201
 
-    #@proveedor_required
-    #@verificacion_token_revocado
+    @admin_or_proveedor_required
+    @verificacion_token_revocado
     def put(self, id):
         producto = db.session.query(ProductosModels).get_or_404(id)
         datos = request.get_json().items()
@@ -54,8 +54,8 @@ class Producto(Resource):
         db.session.commit()
         return producto.hacia_json(), 201
 
-    #@admin_or_proveedor_required
-    #@verificacion_token_revocado
+    @admin_or_proveedor_required
+    @verificacion_token_revocado
     def delete(self, id):
         producto = db.session.query(ProductosModels).get_or_404(id)
         db.session.delete(producto)

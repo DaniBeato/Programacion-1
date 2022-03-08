@@ -9,7 +9,7 @@ class RegistroForm(FlaskForm):
     nombre = StringField('Nombre',
      [
          validators.required(message = 'Debe introducir un nombre'),
-         validators.Length(min=5)
+         validators.Length(min=2)
      ])
 
     apellido = StringField('Apellido',
@@ -18,7 +18,7 @@ class RegistroForm(FlaskForm):
          validators.Length(min=5)
     ])
 
-    email = EmailField('E-mail',
+    mail = EmailField('Mail',
     [
         validators.Required(message="Debe introducir un email"),
         validators.Email(message='Formato inválido'),
@@ -32,7 +32,7 @@ class RegistroForm(FlaskForm):
     ])
 
 
-    contrasenia = StringField('Contraseña',
+    contrasenia = PasswordField('Contraseña',
     [
         validators.required(message='Debe introducir una contraseña'),
         validators.Length(min=3)
@@ -40,7 +40,7 @@ class RegistroForm(FlaskForm):
 
     rol = SelectField('Rol', choices = ['admin', 'cliente', 'proveedor'])
 
+
     submit = SubmitField('Guardar Información')
 
-    fields = ['nombre', 'apellido', 'email', 'telefono', 'contrasenia', 'rol']
 
