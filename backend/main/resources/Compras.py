@@ -42,7 +42,7 @@ class Compras(Resource):
         compra = ComprasModels.desde_json(request.get_json())
         db.session.add(compra)
         db.session.commit()
-        return compra.hacia_json(), 201
+        return compra.hacia_json(), 204
 
 
 class Compra(Resource):
@@ -50,7 +50,7 @@ class Compra(Resource):
     @verificacion_token_revocado
     def get(self, id):
         compra = db.session.query(ComprasModels).get_or_404(id)
-        return compra.hacia_json()
+        return compra.hacia_json(),204
 
     @admin_required
     @verificacion_token_revocado
@@ -63,7 +63,7 @@ class Compra(Resource):
             setattr(compra, clave, valor)
         db.session.add(compra)
         db.session.commit()
-        return compra.hacia_json(), 201
+        return compra.hacia_json(), 204
 
     @admin_required
     @verificacion_token_revocado

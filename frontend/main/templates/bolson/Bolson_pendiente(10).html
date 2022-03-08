@@ -6,5 +6,11 @@
    <div class="container-fluid">
        {{ macro_header.show_header(header) }}
        {{ macro_object.show_object(object) }}
-   </div>
+        <div class="row">
+            <div class="col-md-12">
+                <a type="button" href="{{ url_for('bolson.crear_editar_bolson_pendiente', id=object.id) }}" class="btn btn-secondary">Editar</a>
+                <a type="button" href="{{ url_for('bolson.eliminar_bolson_pendiente', id=object.id) }}" class="btn btn-secondary">Eliminar</a>
+            </div>
+        </div>
+
 {% endblock %}

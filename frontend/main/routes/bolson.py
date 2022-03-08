@@ -1,6 +1,6 @@
-from flask import Blueprint, render_template, redirect, url_for, current_app, request
+from flask import flash,Blueprint, render_template, redirect, url_for, current_app, request
 import requests, json
-from .auth import admin_required, admin_or_proveedor_required
+from .auth import admin_required, admin_or_proveedor_required, token_vencido, admin_or_cliente_required
 from main.forms.bolson_forms import BolsonFilter
 from main.forms.bolson_forms import BolsonForm
 from main.forms.producto_forms import ProductoForm
@@ -12,6 +12,7 @@ bolson = Blueprint('bolson', __name__, url_prefix = '/bolson')
 
 
 @bolson.route('/bolsones')
+@token_vencido
 @admin_required
 def bolsones():
     filter = BolsonFilter(request.args, meta={'csrf': False})
@@ -68,14 +69,16 @@ def bolsones():
     #print(bolsones[0]['nombre'])
     header = "Lista de Bolsones"
     url = "bolson.bolson_"
-    url_actual = "bolson.bolsones"
     ths_list = ["nombre", "estado", "fecha"]
+    url_actual = 'bolson.bolsones'
     return render_template('/bolson/Bolsones_lista(7).html', objects = bolsones, header = header, url = url,
     ths_list = ths_list, first_dict = 0, paginacion = paginacion, filter = filter, filter_list_p = filter_list_p, url_actual = url_actual)
 
 
-@admin_required
+
 @bolson.route('/bolson/<int:id>')
+@token_vencido
+@admin_required
 def bolson_(id):
     auth = request.cookies['token_acceso']
     headers = {
@@ -92,8 +95,10 @@ def bolson_(id):
     return render_template('/bolson/Bolson(8).html', object = bolson, header = header)
 
 
-@admin_or_proveedor_required
+
 @bolson.route('/bolsones_pendientes', methods=['POST', "GET"])
+@token_vencido
+@admin_or_proveedor_required
 def bolsones_pendientes():
     filter = BolsonFilter(request.args, meta={'csrf': False})
     data = {}
@@ -148,8 +153,10 @@ def bolsones_pendientes():
 
 
 
-@admin_or_proveedor_required
+
 @bolson.route('/bolson_pendiente/<int:id>')
+@token_vencido
+@admin_or_proveedor_required
 def bolson_pendiente(id):
     auth = request.cookies['token_acceso']
     headers = {
@@ -168,8 +175,10 @@ def bolson_pendiente(id):
 
 
 
+
+@bolson.route('/crear_editar_bolson_pendiente/<int:id>', methods=['POST', "GET", "PUT",'DELETE'])
+@token_vencido
 @admin_required
-@bolson.route('/crear_editar_bolson_pendiente/<int:id>', methods=['POST', "GET", "PUT"])
 def crear_editar_bolson_pendiente(id):
     form = BolsonForm()  # Instanciar formulario
     if form.validate_on_submit():  # Si el formulario ha sido enviado y es validado correctamente
@@ -189,14 +198,24 @@ def crear_editar_bolson_pendiente(id):
                 headers=headers,
                 data=json.dumps(data))
             print(r.text)
-            return redirect(url_for('bolson.bolsones_pendientes'))  # Redirecciona a lista
+            if r.status_code == 204:
+                flash('Bolsón pendiente creado.', 'warning')
+                return redirect(url_for('bolson.bolsones_pendientes'))
+            else:
+                flash('Error.', 'warning')
+                return redirect(url_for('bolson.bolsones_pendientes'))
         else:
             r = requests.put(
                 current_app.config["API_URL"] + '/bolson-pendiente/' + str(id),
                 headers=headers,
                 data=json.dumps(data))
             print(r.text)
-            return redirect(url_for('bolson.bolsones_pendientes'))
+            if r.status_code == 204:
+                flash('Bolsón pendiente actualizado.', 'warning')
+                return redirect(url_for('bolson.productos'))
+            else:
+                flash('Error.', 'warning')
+                return redirect(url_for('bolson.productos'))
     else:
         if id == 0:
             header = 'Crear Bolsón Pendiente'
@@ -216,8 +235,30 @@ def crear_editar_bolson_pendiente(id):
             return render_template('/bolson/Crear-editar_bolson_pendiente(32).html', id = bolson_pendiente['id'],  form = form, header=header)
 
 
+@bolson.route('/eliminar_bolson_pendiente/<int:id>')
+@token_vencido
 @admin_required
+def eliminar_bolson_pendiente(id):
+    auth = request.cookies['token_acceso']
+    headers = {
+        'content-type': "application/json",
+        'authorization': "Bearer {}".format(auth)
+    }
+    r = requests.delete(
+        current_app.config["API_URL"] + '/bolson-pendiente/' + str(id),
+        headers=headers)
+    if  r.status_code == 204:
+        flash('Bolsón eliminado.', 'warning')
+        return redirect(url_for('bolson.bolsones_pendientes'))
+    else:
+        flash('Error', 'warning')
+        return redirect(url_for('bolson.bolsones_pendientes'))
+
+
+
 @bolson.route('/bolsones_previos')
+@token_vencido
+@admin_required
 def bolsones_previos():
     filter = BolsonFilter(request.args, meta={'csrf': False})
     data = {}
@@ -275,8 +316,10 @@ def bolsones_previos():
                            paginacion = paginacion, filter = filter, filter_list_p = filter_list_p, url_actual = url_actual)
 
 
-@admin_required
+
 @bolson.route('/bolson_previo/<int:id>')
+@token_vencido
+@admin_required
 def bolson_previo(id):
     auth = request.cookies['token_acceso']
     headers = {
@@ -293,8 +336,10 @@ def bolson_previo(id):
     return render_template('/bolson/Bolson_previo(12).html', object = bolson_previo, header = header)
 
 
-@admin_required
+
 @bolson.route('/bolsones_en_venta')
+@token_vencido
+@admin_or_cliente_required
 def bolsones_en_venta():
     filter = BolsonFilter(request.args, meta={'csrf': False})
     data = {}
@@ -342,8 +387,10 @@ def bolsones_en_venta():
     #ths_list = ["nombre", "estado"]
     #return render_template('/bolson/Bolsones_venta(admin)_lista(15).html', objects = bolsones_venta, header = header ,url = url, ths_list = ths_list, first_dict = 0)
 
-@admin_required
+
 @bolson.route('/bolson_en_venta/<int:id>')
+@token_vencido
+@admin_or_cliente_required
 def bolson_en_venta(id):
     auth = request.cookies['token_acceso']
     headers = {
@@ -425,8 +472,9 @@ def producto(id):
 
 
 
-@admin_or_proveedor_required
 @bolson.route('/crear_editar_producto/<int:id>',  methods=['POST', "GET", "PUT"])
+@token_vencido
+@admin_or_proveedor_required
 def crear_editar_producto(id):
     form = ProductoForm()  # Instanciar formulario
     if form.validate_on_submit():  # Si el formulario ha sido enviado y es validado correctamente
@@ -448,14 +496,24 @@ def crear_editar_producto(id):
             print('request', r.text)
             print('token', auth)
             print('headers', headers)
-            return redirect(url_for('bolson.productos'))  # Redirecciona a lista
+            if r.status_code == 204:
+                flash('Producto creado.', 'warning')
+                return redirect(url_for('bolson.productos'))
+            else:
+                flash('Error.', 'warning')
+                return redirect(url_for('bolson.productos'))
         else:
             r = requests.put(
                 current_app.config["API_URL"] + '/producto/' + str(id),
                 headers=headers,
                 data=json.dumps(data))
             print(r.text)
-            return redirect(url_for('bolson.productos'))
+            if r.status_code == 204:
+                flash('Producto actulizado.', 'warning')
+                return redirect(url_for('bolson.productos'))
+            else:
+                flash('Error.', 'warning')
+                return redirect(url_for('bolson.productos'))
     else:
         if id == 0:
             header = 'Crear Producto'
@@ -476,7 +534,24 @@ def crear_editar_producto(id):
                                    form=form, header=header)
 
 
-
+@bolson.route('/eliminar_producto/<int:id>')
+@token_vencido
+@admin_required
+def eliminar_producto(id):
+    auth = request.cookies['token_acceso']
+    headers = {
+        'content-type': "application/json",
+        'authorization': "Bearer {}".format(auth)
+    }
+    r = requests.delete(
+        current_app.config["API_URL"] + '/producto/' + str(id),
+        headers=headers)
+    if  r.status_code == 204:
+        flash('Producto eliminado.', 'warning')
+        return redirect(url_for('bolson.productos'))
+    else:
+        flash('Error', 'warning')
+        return redirect(url_for('bolson.productos'))
 
 
 

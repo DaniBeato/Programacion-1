@@ -60,4 +60,4 @@ class Producto(Resource):
         producto = db.session.query(ProductosModels).get_or_404(id)
         db.session.delete(producto)
         db.session.commit()
-        return '', 204
+        return '', 201

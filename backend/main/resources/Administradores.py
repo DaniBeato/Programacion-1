@@ -45,7 +45,7 @@ class Administrador(Resource):
     def get(self, id):
         administrador = db.session.query(UsuariosModels).get_or_404(id)
         if administrador.rol == 'admin':
-            return administrador.hacia_json()
+            return administrador.hacia_json(),204
 
     @admin_required
     @verificacion_token_revocado
@@ -59,7 +59,7 @@ class Administrador(Resource):
                 setattr(administrador, clave, valor)
             db.session.add(administrador)
             db.session.commit()
-            return administrador.hacia_json()
+            return administrador.hacia_json(), 204
 
     @admin_required
     @verificacion_token_revocado

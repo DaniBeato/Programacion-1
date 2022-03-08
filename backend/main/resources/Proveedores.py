@@ -8,6 +8,7 @@ from main.auth.decoradores import admin_required, proveedor_required, admin_or_p
 
 
 class Proveedores(Resource):
+    @admin_required
     def get(self):
         pagina = 1
         cantidad_elementos = 10
@@ -52,7 +53,7 @@ class Proveedor(Resource):
                 setattr(proveedor, clave, valor)
             db.session.add(proveedor)
             db.session.commit()
-            return proveedor.hacia_json(), 201
+            return proveedor.hacia_json(), 204
 
     @admin_required
     @verificacion_token_revocado

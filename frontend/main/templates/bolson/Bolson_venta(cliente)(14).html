@@ -7,5 +7,10 @@
    <div class="container-fluid">
        {{ macro_header.show_header(header) }}
        {{ macro_object.show_object(object) }}
-   </div>
+    <div class="row">
+        <div class="col-md-12">
+            <a type="button" href="{{ url_for('usuario.crear_compra', id=object.id) }}" class="btn btn-primary">Comprar</a>
+        </div>
+    </div>
+
 {% endblock %}

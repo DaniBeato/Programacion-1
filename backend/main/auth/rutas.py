@@ -20,7 +20,7 @@ def login():
     if usuario.validacion_contrasenia(request.get_json().get("contrasenia")):
         token_acceso = create_access_token(identity = usuario)
         datos = {
-            'id': usuario.id,
+            str('id'): usuario.id,
             'mail': usuario.mail,
             'token_acceso': token_acceso,
             'rol': usuario.rol

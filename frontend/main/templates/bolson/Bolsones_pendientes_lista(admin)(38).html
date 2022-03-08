@@ -29,6 +29,11 @@
             </div>
         </div>
         {{ macro_table.show_rows(objects, url, ths_list, first_dict) }}
+        <div class="row">
+            <div class="col-md-12">
+                <a type="button" href="{{ url_for('bolson.crear_editar_bolson_pendiente', id=0) }}" class="btn btn-primary">Crear</a>
+            </div>
+        </div>
         {{ macro_pagination.show_pagination(url_actual, paginacion, filter_list_p) }}
     </div>
 {% endblock %}

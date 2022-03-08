@@ -56,7 +56,7 @@ class Cliente(Resource):
                 setattr(cliente, clave, valor)
             db.session.add(cliente)
             db.session.commit()
-            return cliente.hacia_json()
+            return cliente.hacia_json(), 204
 
     @admin_or_cliente_required
     @verificacion_token_revocado

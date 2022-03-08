@@ -4,7 +4,7 @@ from flask_login import login_required, login_user, logout_user, current_user, L
 from ..forms.registro_forms import RegistroForm
 from ..forms.ingreso_forms import IngresoForm
 from .auth import User
-from flask_jwt_extended import jwt_required
+from .auth import token_vencido
 
 main = Blueprint('main', __name__, url_prefix='/')
 
@@ -22,7 +22,6 @@ def vista_principal():
         current_app.config["API_URL"] + '/bolsones-venta',
         headers=headers,
         data=json.dumps(data))
-    print(r.text)
     bolsones_venta = json.loads(r.text)['Bolsones Venta']
     return render_template('/main/Vista_principal(1).html', bolsones_venta = bolsones_venta)
     #return render_template('/main/Vista_principal(1).html'
@@ -63,11 +62,12 @@ def registro():
             headers=headers,
             data=data)
         datos_usuario = json.loads(r.text)
-        print('datos usuario', datos_usuario)
+        #print('datos usuario', datos_usuario)
         usuario = User(id=datos_usuario.get("id"), mail=datos_usuario.get("mail"), rol=datos_usuario.get("rol"))
         login_user(usuario)
         req = make_response(redirect(url_for('main.vista_principal')))
         req.set_cookie('token_acceso', datos_usuario.get("token_acceso"), httponly=True)
+        flash('Registro e inicio de sesión correctos', 'warning')
         return req
     header = 'Registro'
     return render_template('main/Registro(2).html', form = form, header = header)  # Muestra el formulario
@@ -89,22 +89,26 @@ def ingreso():
             data= data)
         if r.status_code == 200:
             datos_usuario = json.loads(r.text)
-            print('datos usuario', datos_usuario)
+            #print('datos usuario', datos_usuario)
             usuario = User(id = datos_usuario.get("id"), mail = datos_usuario.get("mail"), rol = datos_usuario.get("rol"))
             login_user(usuario)
+            #print(login_user(usuario))
+            #print('current user', current_user.rol)
             req = make_response(redirect(url_for('main.vista_principal')))
             req.set_cookie('token_acceso', datos_usuario.get("token_acceso"), httponly = True)
+            flash('Inicio de sesión correcto', 'warning')
             return req
         else:
-            flash('Usuario o contraseña incorrecta', 'cuidado!')
+            flash('Usuario o contraseña incorrecta', 'warning')
     print(form.errors)
     header = 'Ingreso'
     #return redirect(url_for('main.vista_principal'))
     return render_template('/main/Ingreso(3).html', form=form, header = header)
 
 
-@jwt_required()
+
 @main.route('/cerrar_sesion')
+@token_vencido
 def cerrar_sesion():
     #Crear una request de redirección
     req = make_response(redirect(url_for('main.vista_principal')))
@@ -112,13 +116,15 @@ def cerrar_sesion():
     req.set_cookie('token_acceso', '', httponly = True)
     #Deloguear usuario
     logout_user()
+    flash('Sesión cerrada con éxito', 'warning')
     #Realizar request
     return req
 
 
 @main.route('/menu')
 def menu():
-    return render_template('/main/Menu(cliente)(31).html')
+    user = current_user.id
+    return render_template('/main/Menu(cliente)(31).html',user=user)
 
 
 
