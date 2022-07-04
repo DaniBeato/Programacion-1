@@ -45,7 +45,7 @@ class Administrador(Resource):
     def get(self, id):
         administrador = db.session.query(UsuariosModels).get_or_404(id)
         if administrador.rol == 'admin':
-            return administrador.hacia_json(),204
+            return administrador.hacia_json()
 
     @admin_required
     @verificacion_token_revocado

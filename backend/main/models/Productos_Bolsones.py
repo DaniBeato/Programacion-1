@@ -1,6 +1,5 @@
 from .. import db
-from . import BolsonesModels
-from . import ProductosModels
+
 
 class Productos_Bolsones(db.Model):
     id = db.Column(db.Integer, primary_key = True)
@@ -14,8 +13,6 @@ class Productos_Bolsones(db.Model):
 
 
     def hacia_json(self):
-        self.bolson = db.session.query(BolsonesModels).get_or_404(self.bolson_ID)
-        self.producto = db.session.query(ProductosModels).get_or_404(self.producto_ID)
         producto_bolson_json = {
             'id': self.id,
             #'producto_ID': self.producto_ID,

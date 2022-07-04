@@ -16,7 +16,7 @@ class Compras(Resource):
     @verificacion_token_revocado
     def get(self):
         pagina = 1
-        cantidad_elementos = 10
+        cantidad_elementos = 5
         filtros = request.data
         compras = db.session.query(ComprasModels)
         if filtros:
@@ -50,7 +50,7 @@ class Compra(Resource):
     @verificacion_token_revocado
     def get(self, id):
         compra = db.session.query(ComprasModels).get_or_404(id)
-        return compra.hacia_json(),204
+        return compra.hacia_json()
 
     @admin_required
     @verificacion_token_revocado

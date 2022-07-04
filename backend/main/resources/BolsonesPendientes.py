@@ -41,7 +41,7 @@ class BolsonesPendientes(Resource):
         bolson_pendiente = BolsonesModels.desde_json(request.get_json())
         db.session.add(bolson_pendiente)
         db.session.commit()
-        return bolson_pendiente.hacia_json(), 204
+        return bolson_pendiente.hacia_json()
 
 
 

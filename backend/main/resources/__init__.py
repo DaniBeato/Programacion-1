@@ -18,4 +18,7 @@ from .Administradores import Administradores as AdministradoresResource
 from .Administradores import Administrador as AdministradorResource
 from .Usuarios import Usuarios as UsuariosResource
 from .Usuarios import Usuario as UsuarioResource
+from .ProductosBolsones import ProductosBolsones as ProductosBolsonesResource
+from .ProductosBolsones import ProductoBolson as ProductoBolsonResource
+
 

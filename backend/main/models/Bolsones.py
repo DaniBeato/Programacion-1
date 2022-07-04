@@ -1,5 +1,6 @@
 from .. import db
 from datetime import datetime
+from . import Productos_BolsonesModels
 
 class Bolsones(db.Model):
     id = db.Column(db.Integer, primary_key = True)
@@ -12,7 +13,7 @@ class Bolsones(db.Model):
 
 
     def __repr__(self):
-        return '< Nombre: %r, Fecha de creación: %r >' % (self.nombre, self.fecha)
+        return '< Nombre: %r, Fecha de creación: %r, Estado: %r, Productos: r%>' % (self.nombre, self.fecha, self.estado, self.productos_bolsones)
 
     def hacia_json(self):
         productos = [producto.hacia_json() for producto in self.productos_bolsones]
@@ -31,11 +32,15 @@ class Bolsones(db.Model):
         nombre = bolson_json.get('nombre')
         estado = bolson_json.get('estado')
         fecha = datetime.strptime(bolson_json.get('fecha'), '%d/%m/%Y')
-        return Bolsones(id = id,
+        bolson = Bolsones(id = id,
                       nombre = nombre,
                       estado = estado,
                       fecha = fecha,
                       )
+        if 'productos' in bolson_json:
+            for producto_ID in bolson_json.get('productos'):
+                bolson.productos.append(Productos_BolsonesModels.productos(producto_ID=producto_ID))
+        return bolson
 
     @staticmethod
     def desde_json_ofertas(bolson_json):
