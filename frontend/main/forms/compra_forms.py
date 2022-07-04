@@ -9,7 +9,7 @@ class CompraForm(FlaskForm):
 
     usuario_ID = IntegerField('Usuario_ID')
 
-    bolsonID = IntegerField('Bolson_ID')
+    bolsonID = IntegerField('BolsonID')
 
     retirado = BooleanField('Retirado')
 
@@ -22,7 +22,7 @@ class CompraForm(FlaskForm):
 
 class CompraFilter(FlaskForm):
     usuario_ID = IntegerField('Usuario_ID', [validators.optional()])
-    retirado = SelectField('Retirado', [validators.optional()], choices=['', (0), (1)])
+    retirado = SelectField('Retirado', [validators.optional()], choices=[(''), ('No'), ('Sí')])
     submit = SubmitField("Filtrar")
 
 

@@ -9,6 +9,10 @@
         <div class="row">
             <div class="col-md-1">
                 <button type="button" class="btn btn-danger">Cerrar</button>
+                <button onclick="goBack()">Go Back</button>
+                    <script>
+                        function goBack() {window.history.back();}
+                    </script>
             </div>
             <div class='col-md-1'></div>
             <div class="col-md-9">
@@ -25,7 +29,7 @@
                 <div class="card" style="width: 18rem;">
                     <div class="card-body">
                         <h5 class="card-title">Modificar Información Personal </h5>
-                        <a href="url_for(usuario.administrador, id = user)" class="card-link">Acceder</a>
+                            <a type="button" href="{{ url_for('usuario.administrador', id = id) }}" class="btn btn-primary">Ver</a>
                     </div>
                 </div>
             </div>

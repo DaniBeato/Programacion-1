@@ -17,13 +17,20 @@ class BolsonForm(FlaskForm):
 
     fecha = DateField('Fecha')
 
+    producto = SelectField('Producto', coerce=int, validate_choice=False)
+
+    producto2 = SelectField('Producto 2', coerce=int, validate_choice=False)
+
+    producto3 = SelectField('Producto 3', coerce=int, validate_choice=False)
+
+    producto4 = SelectField('Producto 4', coerce=int, validate_choice=False)
 
     submit = SubmitField('Guardar Información')
 
 
 class BolsonFilter(FlaskForm):
     nombre = StringField('Nombre', [validators.optional()])
-    estado = SelectField('Estado', [validators.optional()], choices=['', (0), (1)])
+    estado = SelectField('Estado', [validators.optional()], choices=['', ('No aprobado'), ('Aprobado')])
     desde = DateField('Desde', [validators.optional()])
     hasta = DateField('Hasta', [validators.optional()])
     submit = SubmitField("Filtrar")

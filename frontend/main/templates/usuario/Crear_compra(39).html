@@ -6,53 +6,13 @@
 {% block body %}
     <div class ="container-fluid">
         {{ macro_header.show_header(header) }}
-        <form method="POST" action="{{ url_for('bolson.crear_editar_bolson_pendiente', id = id) }}" >
+        <form method="POST" action="{{ url_for('usuario.crear_compra') }}" >
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
             <div class="row">
-                <div class="col-md-3"></div>
-                <div class="col-md-4">
-                    <img src="https://via.placeholder.com/300" class="rounded mx-auto d-block" alt="...">
-                </div>
-                 <div class="col-md-5"></div>
-            </div>
-            <div class="row">
-                <div class="col-md-12"><br><br><br><br>&nbsp;</div>
-            </div>
-            <div class="row">
                 <div class="col-md-2"></div>
                 <div class="col-md-8">
                     <div class="input-group mb-3">
-                        {{  show_field(form.nombre, class='form-control')}}
-                    </div>
-                </div>
-                <div class="col-md-2"></div>
-            </div>
-            <div class="row">
-                <div class="col-md-2"></div>
-                <div class="col-md-8">
-                    <div class="input-group mb-3">
-                        {{  show_field(form.estado, class='form-control')}}
-                    </div>
-                </div>
-                <div class="col-md-2"></div>
-            </div>
-            <div class="row">
-                <div class="col-md-2"></div>
-                <div class="col-md-8">
-                    <div class="input-group mb-3">
-                        {{  show_field(form.fecha, class='form-control')}}
-                    </div>
-                </div>
-                <div class="col-md-2"></div>
-            </div>
-            <div class="row">
-                <div class="col-md-12"><br><br>&nbsp;</div>
-            </div>
-            <div class="row">
-                <div class="col-md-2"></div>
-                <div class="col-md-8">
-                    <div class="input-group mb-3">
-                        {{  show_field(form.producto, class='form-control')}}
+                        {{  show_field(form.usuario_ID, class='form-control')}}
                     </div>
                 </div>
                 <div class="col-md-2"></div>
@@ -64,7 +24,7 @@
                 <div class="col-md-2"></div>
                 <div class="col-md-8">
                     <div class="input-group mb-3">
-                        {{  show_field(form.producto2, class='form-control')}}
+                        {{  show_field(form.bolsonID, class='form-control') }}
                     </div>
                 </div>
                 <div class="col-md-2"></div>
@@ -76,7 +36,7 @@
                 <div class="col-md-2"></div>
                 <div class="col-md-8">
                     <div class="input-group mb-3">
-                        {{  show_field(form.producto3, class='form-control')}}
+                        {{  show_field(form.fecha_compra, class='form-control') }}
                     </div>
                 </div>
                 <div class="col-md-2"></div>
@@ -88,7 +48,7 @@
                 <div class="col-md-2"></div>
                 <div class="col-md-8">
                     <div class="input-group mb-3">
-                        {{  show_field(form.producto4, class='form-control')}}
+                        {{  show_field(form.retirado, class='form-control')}}
                     </div>
                 </div>
                 <div class="col-md-2"></div>
@@ -98,13 +58,13 @@
             </div>
             <div class="row">
                 <div class="col-md-5"></div>
-                <div class="col-md-2">
+                <div class="col-md-3">
                     {{ show_submit(form.submit , class='btn btn-success')}}
                 </div>
-                <div class="col-md-5"></div>
+                <div class="col-md-4"></div>
             </div>
             <div class="row">
-                <div class="col-md-12"><br><br>&nbsp;</div>
+                <div class="col-md-12">&nbsp;</div>
             </div>
         </form>
     </div>

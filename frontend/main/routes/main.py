@@ -124,7 +124,7 @@ def cerrar_sesion():
 @main.route('/menu')
 def menu():
     user = current_user.id
-    return render_template('/main/Menu(cliente)(31).html',user=user)
+    return render_template('/main/Menu(cliente)(31).html', id=user)
 
 
 

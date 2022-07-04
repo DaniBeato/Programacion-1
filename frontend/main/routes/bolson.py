@@ -23,26 +23,20 @@ def bolsones():
         #Si se han usado los botones de paginación cargar nueva página
         data["pagina"] = request.args.get('pagina','')
     if filter.submit():
-        filter_list_p = []
         if filter.nombre.data != '':
             data["nombre"] = filter.nombre.data
-            nombre = filter.nombre.data
-            filter_list_p.append(nombre)
         print(filter.nombre.data)
         if filter.estado.data != None and filter.estado.data != '':
-            data["estado"] = filter.estado.data
-            estado = filter.estado.data
-            filter_list_p.append(estado)
+            if filter.estado.data == str('No aprobado'):
+                data["estado"] = 0
+            else:
+                data["estado"] = 1
         print(filter.estado.data)
         if filter.desde.data != None:
             data["desde"] = filter.desde.data.strftime('%d/%m/%Y')
-            desde = filter.desde.data.strftime('%d/%m/%Y')
-            filter_list_p.append(desde)
         print(filter.desde.data)
         if filter.hasta.data != None:
             data["hasta"] = filter.hasta.data.strftime('%d/%m/%Y')
-            hasta = filter.hasta.data.strftime('%d/%m/%Y')
-            filter_list_p.append(hasta)
         print(filter.hasta.data)
     print(data)
 
@@ -72,7 +66,7 @@ def bolsones():
     ths_list = ["nombre", "estado", "fecha"]
     url_actual = 'bolson.bolsones'
     return render_template('/bolson/Bolsones_lista(7).html', objects = bolsones, header = header, url = url,
-    ths_list = ths_list, first_dict = 0, paginacion = paginacion, filter = filter, filter_list_p = filter_list_p, url_actual = url_actual)
+    ths_list = ths_list, first_dict = 0, paginacion = paginacion, filter = filter, url_actual = url_actual)
 
 
 
@@ -96,6 +90,7 @@ def bolson_(id):
 
 
 
+
 @bolson.route('/bolsones_pendientes', methods=['POST', "GET"])
 @token_vencido
 @admin_or_proveedor_required
@@ -108,21 +103,14 @@ def bolsones_pendientes():
         # Si se han usado los botones de paginación cargar nueva página
         data["pagina"] = request.args.get('pagina', '')
     if filter.submit():
-        filter_list_p = []
         if filter.nombre.data != '':
             data["nombre"] = filter.nombre.data
-            nombre = filter.nombre.data
-            filter_list_p.append(nombre)
         #print(filter.nombre.data)
         if filter.desde.data != None:
             data["desde"] = filter.desde.data.strftime('%d/%m/%Y')
-            desde = filter.desde.data.strftime('%d/%m/%Y')
-            filter_list_p.append(desde)
         #print(filter.desde.data)
         if filter.hasta.data != None:
             data["hasta"] = filter.hasta.data.strftime('%d/%m/%Y')
-            hasta = filter.hasta.data.strftime('%d/%m/%Y')
-            filter_list_p.append(hasta)
         #print(filter.hasta.data)
     #print(data)
 
@@ -148,7 +136,7 @@ def bolsones_pendientes():
     url_actual = "bolson.bolsones_pendientes"
     ths_list = ["nombre", "estado", "fecha"]
     return render_template('/bolson/Bolsones_pendientes_lista(admin)(38).html', objects = bolsones_pendientes, header = header, url = url,
-                           ths_list = ths_list, first_dict = 0, paginacion = paginacion, filter = filter, filter_list_p = filter_list_p, url_actual = url_actual)
+                           ths_list = ths_list, first_dict = 0, paginacion = paginacion, filter = filter, url_actual = url_actual)
     #return render_template('/bolson/Bolsones_pendientes_lista(9).html', header = header, objects = bolsones_pendientes, url = url, feature = feature)
 
 
@@ -181,22 +169,36 @@ def bolson_pendiente(id):
 @admin_required
 def crear_editar_bolson_pendiente(id):
     form = BolsonForm()  # Instanciar formulario
+    auth = request.cookies['token_acceso']
+    headers = {
+        'content-type': "application/json",
+        'authorization': "Bearer {}".format(auth)
+    }
     if form.validate_on_submit():  # Si el formulario ha sido enviado y es validado correctamente
+
         data = {}
         data["nombre"] = form.nombre.data
         data["estado"] = form.estado.data
         data["fecha"] = form.fecha.data.strftime('%d/%m/%Y')
-        print(data)
-        auth = request.cookies['token_acceso']
-        headers = {
-            'content-type': "application/json",
-            'authorization': "Bearer {}".format(auth)
-        }
+
         if id == 0:
             r = requests.post(
                 current_app.config["API_URL"] + '/bolsones-pendientes',
                 headers=headers,
                 data=json.dumps(data))
+            print('Request devuelta', r)
+            bolson_ID = json.loads(r.text)['id']
+            productos = [form.producto.data, form.producto2.data, form.producto3.data, form.producto4.data]
+            for producto in productos:
+                if producto != 0:
+                    print('it works')
+                    data = {
+                        'producto_ID': producto,
+                        'bolson_ID': int(bolson_ID)
+                    }
+                    r = requests.post(current_app.config["API_URL"] + '/productos-bolsones',
+                              headers=headers,
+                              data=json.dumps(data))
             print(r.text)
             if r.status_code == 204:
                 flash('Bolsón pendiente creado.', 'warning')
@@ -209,18 +211,62 @@ def crear_editar_bolson_pendiente(id):
                 current_app.config["API_URL"] + '/bolson-pendiente/' + str(id),
                 headers=headers,
                 data=json.dumps(data))
+
+            bolson_ID = json.loads(r.text)['id']
+            productos = [form.producto.data, form.producto2.data, form.producto3.data, form.producto4.data]
+            for producto in productos:
+                if producto != 0:
+                    print('it works')
+                    data = {
+                        'producto_ID': producto,
+                        'bolson_ID': int(bolson_ID)
+                    }
+                    id1 = str(data['producto_ID'])
+                    id2 = str(data['bolson_ID'])
+                    r = requests.put(current_app.config["API_URL"] + '/productos-bolsones/' + id1 + '/' + id2,
+                                      headers=headers,
+                                      data=json.dumps(data))
             print(r.text)
             if r.status_code == 204:
                 flash('Bolsón pendiente actualizado.', 'warning')
-                return redirect(url_for('bolson.productos'))
+                return redirect(url_for('bolson.bolsones_pendientes'))
             else:
                 flash('Error.', 'warning')
-                return redirect(url_for('bolson.productos'))
+                return redirect(url_for('bolson.bolson_pendiente'))
     else:
         if id == 0:
+            data = {}
+            data['pagina'] = 1
+
             header = 'Crear Bolsón Pendiente'
+            auth = request.cookies['token_acceso']
+            headers = {
+                'content-type': "application/json",
+                'authorization': "Bearer {}".format(auth)
+            }
+
+            r = requests.get(
+                current_app.config["API_URL"] + '/productos',
+                headers=headers,
+                data=json.dumps(data))
+
+            productos = [(item['id'], item['nombre']) for item in json.loads(r.text)["Productos"]]
+            productos.insert(0,(0, ''))
+            form.producto.choices = productos
+            form.producto2.choices = productos
+            form.producto3.choices = productos
+            form.producto4.choices = productos
+
             return render_template('/bolson/Crear-editar_bolson_pendiente(32).html',id = 0, form=form, header=header)
         else:
+            productos = [(item['id'], item['nombre']) for item in json.loads(r.text)["Productos"]]
+            productos.insert(0, (0, ''))
+            form.producto.choices = productos
+            form.producto2.choices = productos
+            form.producto3.choices = productos
+            form.producto4.choices = productos
+
+
             auth = request.cookies['token_acceso']
             header = 'Editar Bolsón Pendiente'
             headers = {
@@ -268,26 +314,20 @@ def bolsones_previos():
         # Si se han usado los botones de paginación cargar nueva página
         data["pagina"] = request.args.get('pagina', '')
     if filter.submit():
-        filter_list_p = []
         if filter.nombre.data != '':
             data["nombre"] = filter.nombre.data
-            nombre = filter.nombre.data
-            filter_list_p.append(nombre)
         print(filter.nombre.data)
         if filter.estado.data != None and filter.estado.data != '':
-            data["estado"] = filter.estado.data
-            estado = filter.estado.data
-            filter_list_p.append(estado)
+            if filter.estado.data == str('No aprobado'):
+                data["estado"] = 0
+            else:
+                data["estado"] = 1
         print(filter.estado.data)
         if filter.desde.data != None:
             data["desde"] = filter.desde.data.strftime('%d/%m/%Y')
-            desde = filter.desde.data.strftime('%d/%m/%Y')
-            filter_list_p.append(desde)
         print(filter.desde.data)
         if filter.hasta.data != None:
             data["hasta"] = filter.hasta.data.strftime('%d/%m/%Y')
-            hasta = filter.hasta.data.strftime('%d/%m/%Y')
-            filter_list_p.append(hasta)
         print(filter.hasta.data)
     print(data)
 
@@ -313,7 +353,7 @@ def bolsones_previos():
     ths_list = ["nombre", "estado", "fecha"]
     url_actual = "bolson.bolsones_previos"
     return render_template('/bolson/Bolsones_previos_lista(11).html', objects = bolsones_previos, header = header ,url = url, ths_list = ths_list, first_dict = 0,
-                           paginacion = paginacion, filter = filter, filter_list_p = filter_list_p, url_actual = url_actual)
+                           paginacion = paginacion, filter = filter, url_actual = url_actual)
 
 
 
@@ -349,11 +389,8 @@ def bolsones_en_venta():
         # Si se han usado los botones de paginación cargar nueva página
         data["pagina"] = request.args.get('pagina', '')
     if filter.submit():
-        filter_list_p = []
         if filter.nombre.data != '':
             data["nombre"] = filter.nombre.data
-            nombre = filter.nombre.data
-            filter_list_p.append(nombre)
         print(filter.nombre.data)
     print(data)
 
@@ -383,7 +420,7 @@ def bolsones_en_venta():
     print(bolsones_venta)
 
     return render_template('/bolson/Bolsones_venta(cliente)_lista(13).html', header = header, objects = bolsones_venta, url = url, feature = feature,
-                           paginacion = paginacion, filter = filter, filter_list_p = filter_list_p, url_actual = url_actual)
+                           paginacion = paginacion, filter = filter,  url_actual = url_actual)
     #ths_list = ["nombre", "estado"]
     #return render_template('/bolson/Bolsones_venta(admin)_lista(15).html', objects = bolsones_venta, header = header ,url = url, ths_list = ths_list, first_dict = 0)
 
@@ -418,11 +455,8 @@ def productos():
         # Si se han usado los botones de paginación cargar nueva página
         data["pagina"] = request.args.get('pagina', '')
     if filter.submit():
-        filter_list_p = []
         if filter.nombre.data != '':
             data["nombre"] = filter.nombre.data
-            nombre = filter.nombre.data
-            filter_list_p.append(nombre)
         print(filter.nombre.data)
     print(data)
 
@@ -449,7 +483,7 @@ def productos():
     ths_list = ['nombre', 'id']
     url_actual = 'bolson.productos'
     return render_template('/bolson/Productos_lista(21).html', objects = productos, url = url, header = header, ths_list = ths_list, first_dict = 0,
-                           paginacion = paginacion, filter = filter, filter_list_p = filter_list_p, url_actual = url_actual)
+                           paginacion = paginacion, filter = filter, url_actual = url_actual)
 
 
 
@@ -496,7 +530,7 @@ def crear_editar_producto(id):
             print('request', r.text)
             print('token', auth)
             print('headers', headers)
-            if r.status_code == 204:
+            if r.status_code == 201:
                 flash('Producto creado.', 'warning')
                 return redirect(url_for('bolson.productos'))
             else:
@@ -508,7 +542,7 @@ def crear_editar_producto(id):
                 headers=headers,
                 data=json.dumps(data))
             print(r.text)
-            if r.status_code == 204:
+            if r.status_code == 201:
                 flash('Producto actulizado.', 'warning')
                 return redirect(url_for('bolson.productos'))
             else:
@@ -546,7 +580,7 @@ def eliminar_producto(id):
     r = requests.delete(
         current_app.config["API_URL"] + '/producto/' + str(id),
         headers=headers)
-    if  r.status_code == 204:
+    if  r.status_code == 201:
         flash('Producto eliminado.', 'warning')
         return redirect(url_for('bolson.productos'))
     else:

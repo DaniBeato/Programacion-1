@@ -29,15 +29,10 @@ def administradores():
         # Si se han usado los botones de paginación cargar nueva página
         data["pagina"] = request.args.get('pagina', '')
     if filter.submit():
-        filter_list_p = []
         if filter.nombre.data != '':
             data["nombre"] = filter.nombre.data
-            nombre = filter.nombre.data
-            filter_list_p.append(nombre)
         if filter.apellido.data != '':
             data["apellido"] = filter.apellido.data
-            apellido = filter.apellido.data
-            filter_list_p.append(apellido)
         print(filter.apellido.data)
     print(data)
 
@@ -64,7 +59,7 @@ def administradores():
     ths_list = ['nombre', 'apellido']
     url_actual = 'usuario.administradores'
     return render_template('/usuario/Administradores_lista(4).html', objects = administradores, header = header, url = url, ths_list = ths_list, first_dict = 0,
-                           paginacion = paginacion, filter = filter, filter_list_p = filter_list_p, url_actual = url_actual)
+                           paginacion = paginacion, filter = filter,  url_actual = url_actual)
 
 
 
@@ -75,7 +70,7 @@ def administrador(id):
     auth = request.cookies['token_acceso']
     headers = {
         'content-type': "application/json",
-        'authorization': "Bearer " "Bearer {}".format(auth)
+        'authorization': "Bearer {}".format(auth)
     }
     r = requests.get(
         current_app.config["API_URL"] + '/administrador/' + str(id),
@@ -167,15 +162,10 @@ def clientes():
         # Si se han usado los botones de paginación cargar nueva página
         data["pagina"] = request.args.get('pagina', '')
     if filter.submit():
-        filter_list_p = []
         if filter.nombre.data != '':
             data["nombre"] = filter.nombre.data
-            nombre = filter.nombre.data
-            filter_list_p.append(nombre)
         if filter.apellido.data != '':
             data["apellido"] = filter.apellido.data
-            apellido = filter.apellido.data
-            filter_list_p.append(apellido)
         print(filter.apellido.data)
     print(data)
 
@@ -203,7 +193,7 @@ def clientes():
     url = 'usuario.cliente'
     url_actual = 'usuario.clientes'
     return render_template('/usuario/Clientes_lista(17).html', objects = clientes, header = header, ths_list = ths_list, url = url, first_dict = 0,
-                           paginacion = paginacion, filter = filter, filter_list_p = filter_list_p, url_actual = url_actual)
+                           paginacion = paginacion, filter = filter, url_actual = url_actual)
 
 
 
@@ -305,16 +295,13 @@ def compras():
         # Si se han usado los botones de paginación cargar nueva página
         data["pagina"] = request.args.get('pagina', '')
     if filter.submit():
-        filter_list_p = []
         if filter.usuario_ID.data != '' and filter.usuario_ID.data != None:
             data["usuario_ID"] = filter.usuario_ID.data
-            usuario_ID = filter.usuario_ID.data
-            filter_list_p.append(usuario_ID)
         if filter.retirado.data != '' and filter.retirado.data != None:
-            data["retirado"] = filter.retirado.data
-            retirado = filter.retirado.data
-            filter_list_p.append(retirado)
-    print(data)
+            if filter.retirado.data == str('No'):
+                data["retirado"] = 0
+            else:
+                data["retirado"] = 1
 
     auth = request.cookies['token_acceso']
     headers = {
@@ -341,7 +328,7 @@ def compras():
     ths_list = ['id','fecha_compra', 'retirado']
     url_actual = 'usuario.compras'
     return render_template('/usuario/Compras_lista(19).html', objects = compras, header = header, url = url, ths_list = ths_list, first_dict = 0,
-                           paginacion = paginacion, filter = filter, filter_list_p = filter_list_p, url_actual = url_actual)
+                           paginacion = paginacion, filter = filter,  url_actual = url_actual)
 
 
 
@@ -364,34 +351,39 @@ def compra(id):
     return render_template('/usuario/Compra(20).html', object = compra, header = header)
 
 
-@usuario.route('crear_compra/<int:id>')
+@usuario.route('/crear_compra', methods=["GET", "PUT", "POST"])
 @token_vencido
 @admin_or_cliente_required
-def crear_compra(id):
-    data = {}
-    data["usuario_ID"] = current_user.id
-    data["bolsonID"] = id
-    data["fecha_compra"] = datetime.today().strftime('%d/%m/%Y')
-    data["retirado"] = 0
-    print('data',data)
+def crear_compra():
+    form = CompraForm()
+    if form.validate_on_submit():
+        data = {}
+        data["usuario_ID"] = form.usuario_ID.data
+        data["bolsonID"] = form.bolsonID.data
+        data["retirado"] = form.retirado.data
+        data['fecha_compra'] = form.fecha_compra.data.strftime('%d/%m/%Y')
+        print(data)
 
-    auth = request.cookies['token_acceso']
-    headers = {
-        'content-type': "application/json",
-        'authorization': "Bearer {}".format(auth)
-    }
+        auth = request.cookies['token_acceso']
+        headers = {
+            'content-type': "application/json",
+            'authorization': "Bearer {}".format(auth)
+        }
 
-    r = requests.post(
-        current_app.config["API_URL"] + '/compras',
-        headers=headers,
-        data=json.dumps(data))
-    print(r.text)
-    if r.status_code == 204:
-        flash('Compra creada.', 'warning')
-        return redirect(url_for('main.vista_principal'))
+        r = requests.post(
+            current_app.config["API_URL"] + '/compras',
+            headers=headers,
+            data=json.dumps(data))
+        print(r.text)
+        if r.status_code == 204:
+            flash('Compra creada.', 'warning')
+            return redirect(url_for('usuario.compras'))
+        else:
+            flash('Error.', 'warning')
+            return redirect(url_for('usuario.compras'))
     else:
-        flash('Error.', 'warning')
-        return redirect(url_for('main.vista_principal'))
+        header = 'Crear Compra'
+        return render_template('/usuario/Crear_compra(39).html', form=form, header=header)
 
 
 
@@ -403,7 +395,7 @@ def editar_compra(id):
     if form.validate_on_submit():  # Si el formulario ha sido enviado y es validado correctamente
         data = {}
         data["usuario_ID"] = form.usuario_ID.data
-        data["bolson_ID"] = form.bolsonID.data
+        data["bolsonID"] = form.bolsonID.data
         data["retirado"] = form.retirado.data
         data['fecha_compra'] = form.fecha_compra.data.strftime('%d/%m/%Y')
         print(data)
@@ -469,15 +461,10 @@ def proveedores():
         # Si se han usado los botones de paginación cargar nueva página
         data["pagina"] = request.args.get('pagina', '')
     if filter.submit():
-        filter_list_p = []
         if filter.nombre.data != '':
             data["nombre"] = filter.nombre.data
-            nombre = filter.nombre.data
-            filter_list_p.append(nombre)
         if filter.apellido.data != '':
             data["apellido"] = filter.apellido.data
-            apellido = filter.apellido.data
-            filter_list_p.append(apellido)
         print(filter.apellido.data)
     print(data)
 
@@ -504,7 +491,7 @@ def proveedores():
     ths_list = ['nombre', 'apellido']
     url_actual = 'usuario.proveedores'
     return render_template('/usuario/Proveedores_lista(23).html', objects = proveedores, header = header, url = url, ths_list = ths_list, first_dict = 0,
-                           paginacion = paginacion, filter = filter, filter_list_p = filter_list_p, url_actual = url_actual)
+                           paginacion = paginacion, filter = filter, url_actual = url_actual)
 
 
 
@@ -592,6 +579,7 @@ def eliminar_proveedor(id):
     else:
         flash('Error', 'warning')
         return redirect(url_for('usuario.proveedores'))
+
 
 
 

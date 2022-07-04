@@ -7,10 +7,15 @@
        {{ macro_header.show_header(header) }}
        {{ macro_object.show_object(object) }}
         <div class="row">
-            <div class="col-md-12">
-                <a type="button" href="{{ url_for('bolson.crear_editar_bolson_pendiente', id=object.id) }}" class="btn btn-secondary">Editar</a>
-                <a type="button" href="{{ url_for('bolson.eliminar_bolson_pendiente', id=object.id) }}" class="btn btn-secondary">Eliminar</a>
+            <div class="col-md-2"></div>
+            <div class="col-md-3">
+                <a type="button" href="{{ url_for('bolson.crear_editar_bolson_pendiente', id=object.id) }}" class="btn btn-success">Editar</a>
             </div>
+            <div class="col-md-2"></div>
+            <div class="col-md-3">
+                <a type="button" href="{{ url_for('bolson.eliminar_bolson_pendiente', id=object.id) }}" class="btn btn-danger">Eliminar</a>
+            </div>
+            <div class="col-md-2"></div>
         </div>
-
+   </div>
 {% endblock %}

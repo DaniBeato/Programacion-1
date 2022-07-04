@@ -7,5 +7,16 @@
    <div class="container-fluid">
        {{ macro_header.show_header(header) }}
        {{ macro_object.show_object(object) }}
+       <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-3">
+                <a type="button" href="{{ url_for('usuario.editar_administrador', id=object.id) }}" class="btn btn-success">Editar</a>
+            </div>
+            <div class="col-md-2"></div>
+            <div class="col-md-3">
+                <a type="button" href="{{ url_for('usuario.eliminar_administrador', id=object.id) }}" class="btn btn-danger">Eliminar</a>
+            </div>
+            <div class="col-md-2"></div>
+        </div>
    </div>
 {% endblock %}

@@ -28,9 +28,9 @@
                 </div>
             </div>
             <div class="col-md-2">
-                <a href="/registro" class="btn btn-primary btn-lg">Registrarse</a>
+                <h5>Email: {{current_user.mail}}</h5>
                 <div><br></div>
-                <a href="/ingreso" class="btn btn-secondary btn-lg">Acceder</a>
+                <h5>Rol: {{current_user.rol}}<h5>
             </div>
         </div>
         <div class="row">
@@ -90,12 +90,22 @@
             <div class="col-md-3"></div>
             <div class="col-md-2"></div>
             <div class="col-md-2">
-                <a class="btn btn-info" href="https://mail.google.com/mail/u/0/#inbox?compose=CllgCJlDTWfQZPXrHXpDTffXFHNlVdjtcktBWkrvXCCMNsHSLPbJrrKcXJGKxJFvTSlcwkbJjnB" role="button-info">info@soporte.com</a>
+                <div class="callout"><b>Si tienes alguna duda:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;¡contáctanos!</b></div>
             </div>
             <div class="col-md-5"></div>
         </div>
         <div class="row">
             <div class="col-md-12">&nbsp;</div>
+        </div>
+        <div class="row">
+            <div class="col-md-5"></div>
+            <div class="col-md-3">
+                <a class="btn btn-info" href="https://mail.google.com/mail/u/0/#inbox?compose=CllgCJlDTWfQZPXrHXpDTffXFHNlVdjtcktBWkrvXCCMNsHSLPbJrrKcXJGKxJFvTSlcwkbJjnB" role="button-info">info@soporte.com</a>
+            </div>
+            <div class="col-md-2">
+                 <a class="btn btn-danger" href="{{ url_for('main.cerrar_sesion') }}" role="button-info">Cerrar Sesión</a>
+            </div>
+            <div class="col-md-2"></div>
         </div>
         <div class="row">
             <div class="col-md-12"><br>&nbsp;</div>
