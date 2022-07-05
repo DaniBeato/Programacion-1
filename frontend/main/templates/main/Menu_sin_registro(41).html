@@ -1,0 +1,53 @@
+{% extends './main/Main(sin_registro)(37).html' %}
+{% block body %}
+     <div class ="container-fluid">
+        <div class="row">
+            <div class="col-md-12">&nbsp;</div>
+        </div>
+        <div class="row">
+            <div class="col-md-1">
+            <div class="col-md-1">
+                <button onclick="goBack()">Cerrar</button>
+                    <script>
+                        function goBack() {window.history.back();}
+                    </script>
+                </div>
+            </div>
+            <div class='col-md-1'></div>
+            <div class="col-md-9">
+                <h1 class="card-title"><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Menú</b></h1>
+            </div>
+            <div class='col-md-1'></div>
+        </div>
+         <div class='col-md-1'></div>
+        </div>
+        <div class="row">
+            <div class="col-md-12"><br><br><br>&nbsp;</div>
+        </div>
+        <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-2">
+                <div class="card" style="width: 18rem;">
+                    <div class="card-body">
+                        <h5 class="card-title">Bolsones en Venta</h5>
+                        <a href="/bolson/bolsones_en_venta" class="card-link">Acceder</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-1"></div>
+            <div class="col-md-2">
+                <div class="card" style="width: 18rem;">
+                    <div class="card-body">
+                        <h5 class="card-title">Productos </h5>
+                        <a href="/bolson/productos" class="card-link">Acceder</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class='col-md-1'></div>
+        </div>
+        <div class="row">
+            <div class="col-md-12"><br><br><br>&nbsp;</div>
+        </div>
+     </div>
+{% endblock %}

@@ -28,6 +28,20 @@ class BolsonForm(FlaskForm):
     submit = SubmitField('Guardar Información')
 
 
+class BolsonFormEdit(FlaskForm):
+
+    nombre = StringField('Nombre',
+     [
+         validators.required(message='Debe introducir un nombre'),
+         validators.Length(min=5)
+     ])
+
+    estado = BooleanField()
+
+    fecha = DateField('Fecha')
+
+    submit = SubmitField('Guardar Información')
+
 class BolsonFilter(FlaskForm):
     nombre = StringField('Nombre', [validators.optional()])
     estado = SelectField('Estado', [validators.optional()], choices=['', ('No aprobado'), ('Aprobado')])

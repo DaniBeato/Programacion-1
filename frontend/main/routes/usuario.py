@@ -287,48 +287,93 @@ def eliminar_cliente(id):
 @token_vencido
 @admin_or_cliente_required
 def compras():
-    filter = CompraFilter(request.args, meta={'csrf': False})
-    data = {}
-    data['pagina'] = "1"
-    data['cantidad_elementos'] = "5"
-    if 'pagina' in request.args:
-        # Si se han usado los botones de paginación cargar nueva página
-        data["pagina"] = request.args.get('pagina', '')
-    if filter.submit():
-        if filter.usuario_ID.data != '' and filter.usuario_ID.data != None:
-            data["usuario_ID"] = filter.usuario_ID.data
-        if filter.retirado.data != '' and filter.retirado.data != None:
-            if filter.retirado.data == str('No'):
-                data["retirado"] = 0
-            else:
-                data["retirado"] = 1
+    if current_user.rol == "admin":
+        filter = CompraFilter(request.args, meta={'csrf': False})
+        data = {}
+        data['pagina'] = "1"
+        data['cantidad_elementos'] = "5"
+        if 'pagina' in request.args:
+            # Si se han usado los botones de paginación cargar nueva página
+            data["pagina"] = request.args.get('pagina', '')
+        if filter.submit():
+            if filter.usuario_ID.data != '' and filter.usuario_ID.data != None:
+                data["usuario_ID"] = filter.usuario_ID.data
+            if filter.retirado.data != '' and filter.retirado.data != None:
+                if filter.retirado.data == str('No'):
+                    data["retirado"] = 0
+                else:
+                    data["retirado"] = 1
 
-    auth = request.cookies['token_acceso']
-    headers = {
-        'content-type': "application/json",
-        'authorization': "Bearer {}".format(auth)
-    }
-    # print(headers)
+        auth = request.cookies['token_acceso']
+        headers = {
+            'content-type': "application/json",
+            'authorization': "Bearer {}".format(auth)
+        }
+        # print(headers)
 
-    r = requests.get(
-        current_app.config["API_URL"] + '/compras',
-        headers=headers,
-        data=json.dumps(data))
+        r = requests.get(
+            current_app.config["API_URL"] + '/compras',
+            headers=headers,
+            data=json.dumps(data))
 
-    print(r.text)
+        print(r.text)
 
-    paginacion = {}
-    paginacion["cantidad_paginas"] = json.loads(r.text)["Cantidad de páginas"]
-    paginacion["pagina_actual"] = json.loads(r.text)["Página actual"]
+        paginacion = {}
+        paginacion["cantidad_paginas"] = json.loads(r.text)["Cantidad de páginas"]
+        paginacion["pagina_actual"] = json.loads(r.text)["Página actual"]
 
-    compras = json.loads(r.text)['Compras']
-    print(compras)
-    header = 'Lista de Compras'
-    url = 'usuario.compra'
-    ths_list = ['id','fecha_compra', 'retirado']
-    url_actual = 'usuario.compras'
-    return render_template('/usuario/Compras_lista(19).html', objects = compras, header = header, url = url, ths_list = ths_list, first_dict = 0,
-                           paginacion = paginacion, filter = filter,  url_actual = url_actual)
+        compras = json.loads(r.text)['Compras']
+        print(compras)
+        header = 'Lista de Compras'
+        url = 'usuario.compra'
+        ths_list = ['id','fecha_compra', 'retirado']
+        url_actual = 'usuario.compras'
+        return render_template('/usuario/Compras_lista(19).html', objects = compras, header = header, url = url, ths_list = ths_list, first_dict = 0,
+                               paginacion = paginacion, filter = filter,  url_actual = url_actual)
+    else:
+        filter = CompraFilter(request.args, meta={'csrf': False})
+        data = {}
+        data['pagina'] = "1"
+        data['cantidad_elementos'] = "5"
+        data["usuario_ID"] = str(current_user.id)
+        if 'pagina' in request.args:
+            # Si se han usado los botones de paginación cargar nueva página
+            data["pagina"] = request.args.get('pagina', '')
+        if filter.submit():
+            data["usuario_ID"] = str(current_user.id)
+            if filter.retirado.data != '' and filter.retirado.data != None:
+                if filter.retirado.data == str('No'):
+                    data["retirado"] = 0
+                else:
+                    data["retirado"] = 1
+
+        auth = request.cookies['token_acceso']
+        headers = {
+            'content-type': "application/json",
+            'authorization': "Bearer {}".format(auth)
+        }
+        # print(headers)
+
+        r = requests.get(
+            current_app.config["API_URL"] + '/compras',
+            headers=headers,
+            data=json.dumps(data))
+
+        print(r.text)
+
+        paginacion = {}
+        paginacion["cantidad_paginas"] = json.loads(r.text)["Cantidad de páginas"]
+        paginacion["pagina_actual"] = json.loads(r.text)["Página actual"]
+
+        compras = json.loads(r.text)['Compras']
+        print(compras)
+        header = 'Lista de Compras'
+        url = 'usuario.compra'
+        ths_list = ['id', 'fecha_compra', 'retirado']
+        url_actual = 'usuario.compras'
+        return render_template('/usuario/Compras_lista(19).html', objects=compras, header=header, url=url,
+                               ths_list=ths_list, first_dict=0,
+                               paginacion=paginacion, filter=filter, url_actual=url_actual)
 
 
 
@@ -351,39 +396,34 @@ def compra(id):
     return render_template('/usuario/Compra(20).html', object = compra, header = header)
 
 
-@usuario.route('/crear_compra', methods=["GET", "PUT", "POST"])
+@usuario.route('/crear_compra/<int:id>', methods=["GET", "PUT", "POST"])
 @token_vencido
 @admin_or_cliente_required
-def crear_compra():
-    form = CompraForm()
-    if form.validate_on_submit():
-        data = {}
-        data["usuario_ID"] = form.usuario_ID.data
-        data["bolsonID"] = form.bolsonID.data
-        data["retirado"] = form.retirado.data
-        data['fecha_compra'] = form.fecha_compra.data.strftime('%d/%m/%Y')
-        print(data)
+def crear_compra(id):
+    auth = request.cookies['token_acceso']
+    headers = {
+        'content-type': "application/json",
+        'authorization': "Bearer {}".format(auth)
+    }
 
-        auth = request.cookies['token_acceso']
-        headers = {
-            'content-type': "application/json",
-            'authorization': "Bearer {}".format(auth)
-        }
+    data = {}
+    data['usuario_ID'] = current_user.id
+    data['bolson_ID'] = id
+    data['retirado'] = 0
+    data['fecha_compra'] = datetime.today().strftime('%d/%m/%Y')
+    print('datos de compra', data)
 
-        r = requests.post(
-            current_app.config["API_URL"] + '/compras',
-            headers=headers,
-            data=json.dumps(data))
-        print(r.text)
-        if r.status_code == 204:
-            flash('Compra creada.', 'warning')
-            return redirect(url_for('usuario.compras'))
-        else:
-            flash('Error.', 'warning')
-            return redirect(url_for('usuario.compras'))
+    r = requests.post(
+        current_app.config["API_URL"] + '/compras',
+        headers=headers,
+        data=json.dumps(data))
+    print(r.text)
+    if r.status_code == 204:
+        flash('Compra creada.', 'warning')
+        return redirect(url_for('bolson.bolsones_en_venta'))
     else:
-        header = 'Crear Compra'
-        return render_template('/usuario/Crear_compra(39).html', form=form, header=header)
+        flash('Error.', 'warning')
+        return redirect(url_for('bolson.bolsones_en_venta'))
 
 
 

@@ -1,19 +1,26 @@
-{% extends './main/Main(sin_registro)(37).html' %}
+{% if current_user.is_authenticated %}
+    {% extends './main/Main(con_registro)(40).html' %}
+{% else %}
+    {% extends './main/Main(sin_registro)(37).html' %}
+{% endif %}
 {% import 'macros/table.html' as macro_table %}
 {% import 'macros/header.html' as macro_header %}
 {% import 'macros/pagination.html' as macro_pagination %}
 {% from 'macros/form.html' import show_field, show_submit %}
 
 {% block body %}
+
     <div class ="container-fluid">
         {{ macro_header.show_header(header) }}
         <div class="row">
             <div class="col-md-12">
                 <form method="GET" action="{{ url_for(url_actual) }}" >
                     <div class="form-row">
-                        <div class="form-group col-md-1">
-                            {{ show_field(filter.usuario_ID, class='form-control')}}
-                        </div>
+                        {% if current_user.rol == "admin" %}
+                            <div class="form-group col-md-1">
+                                {{ show_field(filter.usuario_ID, class='form-control')}}
+                            </div>
+                        {% endif %}
                         <div class="form-group col-md-1">
                             {{ show_field(filter.retirado, class='form-control')}}
                         </div>
@@ -25,11 +32,6 @@
             </div>
         </div>
         {{ macro_table.show_rows(objects, url, ths_list, first_dict) }}
-        <div class="row">
-            <div class="col-md-12">
-                <a type="button" href="{{ url_for('usuario.crear_compra') }}" class="btn btn-primary">Crear</a>
-            </div>
-        </div>
         <div class="row">
             <div class="col-md-12"><br><br>&nbsp;</div>
         </div>

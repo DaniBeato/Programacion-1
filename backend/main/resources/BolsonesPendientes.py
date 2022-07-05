@@ -79,7 +79,7 @@ class BolsonPendiente(Resource):
                 setattr(bolson_pendiente, clave, valor)
             db.session.add(bolson_pendiente)
             db.session.commit()
-            return bolson_pendiente.hacia_json(), 204
+            return bolson_pendiente.hacia_json()
         else:
             return 'Este bolsón se encuentra aprobado',400
 

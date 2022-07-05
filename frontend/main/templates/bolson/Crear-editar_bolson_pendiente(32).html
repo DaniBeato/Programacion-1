@@ -1,4 +1,8 @@
-{% extends './main/Main(sin_registro)(37).html' %}
+{% if current_user.is_authenticated %}
+    {% extends './main/Main(con_registro)(40).html' %}
+{% else %}
+    {% extends './main/Main(sin_registro)(37).html' %}
+{% endif %}
 {% import 'macros/header.html' as macro_header %}
 {% from 'macros/form.html' import show_field, show_submit %}
 
@@ -48,54 +52,56 @@
             <div class="row">
                 <div class="col-md-12"><br><br>&nbsp;</div>
             </div>
-            <div class="row">
-                <div class="col-md-2"></div>
-                <div class="col-md-8">
-                    <div class="input-group mb-3">
-                        {{  show_field(form.producto, class='form-control')}}
+            {% if id == 0 %}
+                <div class="row">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-8">
+                        <div class="input-group mb-3">
+                            {{  show_field(form.producto, class='form-control')}}
+                        </div>
                     </div>
+                    <div class="col-md-2"></div>
                 </div>
-                <div class="col-md-2"></div>
-            </div>
-            <div class="row">
-                <div class="col-md-12"><br>&nbsp;</div>
-            </div>
-            <div class="row">
-                <div class="col-md-2"></div>
-                <div class="col-md-8">
-                    <div class="input-group mb-3">
-                        {{  show_field(form.producto2, class='form-control')}}
+                <div class="row">
+                    <div class="col-md-12"><br>&nbsp;</div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-8">
+                        <div class="input-group mb-3">
+                            {{  show_field(form.producto2, class='form-control')}}
+                        </div>
                     </div>
+                    <div class="col-md-2"></div>
                 </div>
-                <div class="col-md-2"></div>
-            </div>
-            <div class="row">
-                <div class="col-md-12"><br>&nbsp;</div>
-            </div>
-            <div class="row">
-                <div class="col-md-2"></div>
-                <div class="col-md-8">
-                    <div class="input-group mb-3">
-                        {{  show_field(form.producto3, class='form-control')}}
+                <div class="row">
+                    <div class="col-md-12"><br>&nbsp;</div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-8">
+                        <div class="input-group mb-3">
+                            {{  show_field(form.producto3, class='form-control')}}
+                        </div>
                     </div>
+                    <div class="col-md-2"></div>
                 </div>
-                <div class="col-md-2"></div>
-            </div>
-            <div class="row">
-                <div class="col-md-12"><br>&nbsp;</div>
-            </div>
-            <div class="row">
-                <div class="col-md-2"></div>
-                <div class="col-md-8">
-                    <div class="input-group mb-3">
-                        {{  show_field(form.producto4, class='form-control')}}
+                <div class="row">
+                    <div class="col-md-12"><br>&nbsp;</div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-8">
+                        <div class="input-group mb-3">
+                            {{  show_field(form.producto4, class='form-control')}}
+                        </div>
                     </div>
+                    <div class="col-md-2"></div>
                 </div>
-                <div class="col-md-2"></div>
-            </div>
-            <div class="row">
-                <div class="col-md-12"><br>&nbsp;</div>
-            </div>
+                <div class="row">
+                    <div class="col-md-12"><br>&nbsp;</div>
+                </div>
+            {% endif %}
             <div class="row">
                 <div class="col-md-5"></div>
                 <div class="col-md-2">

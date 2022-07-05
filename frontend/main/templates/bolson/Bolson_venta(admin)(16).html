@@ -1,4 +1,8 @@
-{% extends './main/Main(sin_registro)(37).html' %}
+{% if current_user.is_authenticated %}
+    {% extends './main/Main(con_registro)(40).html' %}
+{% else %}
+    {% extends './main/Main(sin_registro)(37).html' %}
+{% endif %}
 {% import 'macros/object.html' as macro_object %}
 {% import 'macros/header.html' as macro_header %}
 
@@ -7,5 +11,10 @@
    <div class="container-fluid">
        {{ macro_header.show_header(header) }}
        {{ macro_object.show_object(object) }}
+   <div class="row">
+        <div class="col-md-12">
+            <a type="button" href="{{ url_for('usuario.crear_compra', id=object.id) }}" class="btn btn-primary">Comprar</a>
+        </div>
+    </div>
    </div>
 {% endblock %}

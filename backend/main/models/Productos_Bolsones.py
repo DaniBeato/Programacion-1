@@ -15,10 +15,10 @@ class Productos_Bolsones(db.Model):
     def hacia_json(self):
         producto_bolson_json = {
             'id': self.id,
-            #'producto_ID': self.producto_ID,
-            #'bolson_ID': self.bolson_ID,
-            'bolson': self.bolson.hacia_json(),
-            'producto': self.producto.hacia_json()
+            'producto_ID': self.producto_ID,
+            'bolson_ID': self.bolson_ID
+            #'bolson': self.bolson.hacia_json(),
+            #'producto': self.producto.hacia_json()
         }
         return producto_bolson_json
 

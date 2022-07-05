@@ -1,8 +1,13 @@
-{% extends './main/Main(sin_registro)(37).html' %}
+{% if current_user.is_authenticated %}
+    {% extends './main/Main(con_registro)(40).html' %}
+{% else %}
+    {% extends './main/Main(sin_registro)(37).html' %}
+{% endif %}
 {% import 'macros/table.html' as macro_table %}
 {% import 'macros/header.html' as macro_header %}
 {% import 'macros/pagination.html' as macro_pagination %}
 {% from 'macros/form.html' import show_field, show_submit %}
+{% import 'macros/card.html' as macro_card %}
 
 
 {% block body %}
@@ -22,12 +27,18 @@
                 </form>
             </div>
         </div>
-        {{ macro_table.show_rows(objects, url, ths_list, first_dict) }}
-        <div class="row">
-            <div class="col-md-12">
-                <a type="button" href="{{ url_for('bolson.crear_editar_producto', id=0) }}" class="btn btn-primary">Crear</a>
+        {% if current_user.role == 'admin' %}
+            {{ macro_table.show_rows(objects, url, ths_list, first_dict) }}
+        {% else %}
+            {{ macro_card.show_cards(objects, url, feature) }}
+        {% endif %}
+        {% if current_user.rol == "admin" %}
+            <div class="row">
+                <div class="col-md-12">
+                    <a type="button" href="{{ url_for('bolson.crear_editar_producto', id=0) }}" class="btn btn-primary">Crear</a>
+                </div>
             </div>
-        </div>
+        {% endif %}
         <div class="row">
             <div class="col-md-12"><br><br>&nbsp;</div>
         </div>

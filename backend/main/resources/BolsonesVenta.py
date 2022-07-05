@@ -31,9 +31,6 @@ class BolsonesVenta(Resource):
 
 
 
-
-
-
 class BolsonVenta(Resource):
     def get(self, id):
         bolson_venta = db.session.query(BolsonesModels).get_or_404(id)

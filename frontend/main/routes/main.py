@@ -123,8 +123,21 @@ def cerrar_sesion():
 
 @main.route('/menu')
 def menu():
-    user = current_user.id
-    return render_template('/main/Menu(cliente)(31).html', id=user)
+    if current_user.is_anonymous:
+        return render_template('/main/Menu_sin_registro(41).html')
+    elif current_user.rol == "cliente":
+        return render_template('/main/Menu(cliente)(31).html', id=current_user.id)
+    elif current_user.rol == "proveedor":
+        return render_template('/main/Menu(proveedor)(30).html', id=current_user.id)
+    elif current_user.rol == "admin":
+        return render_template('/main/Menu(administrador)(29).html', id=current_user.id)
+
+
+
+
+
+
+
 
 
 

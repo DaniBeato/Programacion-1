@@ -6,8 +6,6 @@ from main.auth.decoradores import admin_required, proveedor_required, admin_or_p
 
 
 class Productos(Resource):
-    #@admin_or_proveedor_required
-    @verificacion_token_revocado
     def get(self):
         pagina = 1
         cantidad_elementos = 30

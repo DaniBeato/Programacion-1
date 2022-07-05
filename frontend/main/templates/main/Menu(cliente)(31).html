@@ -1,5 +1,8 @@
-{% extends './main/Main(sin_registro)(37).html' %}
-
+{% if current_user.is_authenticated %}
+    {% extends './main/Main(con_registro)(40).html' %}
+{% else %}
+    {% extends './main/Main(sin_registro)(37).html' %}
+{% endif %}
 
 {% block body %}
     <div class ="container-fluid">
@@ -8,12 +11,11 @@
         </div>
         <div class="row">
             <div class="col-md-1">
-                <button type="button" class="btn btn-danger">Cerrar</button>
-                <button onclick="goBack()">Go Back</button>
+                <button onclick="goBack()">Cerrar</button>
                     <script>
                         function goBack() {window.history.back();}
                     </script>
-            </div>
+                </div>
             <div class='col-md-1'></div>
             <div class="col-md-9">
                 <h1 class="card-title"><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Menú </b></h1>
@@ -21,7 +23,7 @@
             <div class='col-md-1'></div>
         </div>
         <div class="row">
-            <div class="col-md-12"><br><br><br>Espacio</div>
+            <div class="col-md-12"><br><br><br>&nbsp;</div>
         </div>
         <div class="row">
             <div class="col-md-0.5"></div>
@@ -29,7 +31,7 @@
                 <div class="card" style="width: 18rem;">
                     <div class="card-body">
                         <h5 class="card-title">Modificar Información Personal </h5>
-                            <a type="button" href="{{ url_for('usuario.administrador', id = id) }}" class="btn btn-primary">Ver</a>
+                            <a href="{{ url_for('usuario.cliente', id = id) }}" class="card-link">Acceder</a>
                     </div>
                 </div>
             </div>
@@ -63,22 +65,10 @@
             <div class="col-md-0.5"></div>
         </div>
          <div class="row">
-            <div class="col-md-12"><br>Espacio</div>
+            <div class="col-md-12"><br>&nbsp;</div>
         </div>
         <div class="row">
-            <div class="col-md-0.5"></div>
-            <div class="col-md-2">
-                <div class="card" style="width: 18rem;">
-                    <div class="card-body">
-                        <h5 class="card-title">Proveedores</h5>
-                        <a href="/usuario/proveedores" class="card-link">Acceder</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-9.5"></div>
-        </div>
-        <div class="row">
-            <div class="col-md-12"><br>Espacio</div>
+            <div class="col-md-12"><br>&nbsp;</div>
         </div>
     </div>
 {% endblock %}

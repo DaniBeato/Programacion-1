@@ -71,7 +71,7 @@ def create_app():
     api.add_resource(resources.AdministradorResource, '/administrador/<id>')
     api.add_resource(resources.UsuariosResource, '/usuarios')
     api.add_resource(resources.UsuarioResource, '/usuario/<id>')
-    api.add_resource(resources.ProductosBolsonesResource, '/productos-bolsones')
-    api.add_resource(resources.ProductosBolsonesResource, '/producto-bolson/<id1>/<id2>')
+    api.add_resource(resources.BolsonesProductosResource, '/bolsones-productos')
+    api.add_resource(resources.BolsonProductoResource, '/bolson-producto/<id>')
     api.init_app(app)
     return app

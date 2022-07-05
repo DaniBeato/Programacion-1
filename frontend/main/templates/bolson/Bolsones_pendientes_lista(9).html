@@ -1,4 +1,8 @@
-{% extends './main/Main(sin_registro)(37).html' %}
+{% if current_user.is_authenticated %}
+    {% extends './main/Main(con_registro)(40).html' %}
+{% else %}
+    {% extends './main/Main(sin_registro)(37).html' %}
+{% endif %}
 {% import 'macros/card.html' as macro_card %}
 {% import 'macros/header.html' as macro_header %}
 {% import 'macros/pagination.html' as macro_pagination %}
