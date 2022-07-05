@@ -10,20 +10,7 @@ main = Blueprint('main', __name__, url_prefix='/')
 
 @main.route('/')
 def vista_principal():
-    data = {}
-    #data['pagina'] = 1
-    #data['cantidad_elementos'] = 1
-    #auth = request.cookies['access_token']
-    headers = {
-        'content-type': "application/json",
-        'authorization': "Bearer " #+ auth
-    }
-    r = requests.get(
-        current_app.config["API_URL"] + '/bolsones-venta',
-        headers=headers,
-        data=json.dumps(data))
-    bolsones_venta = json.loads(r.text)['Bolsones Venta']
-    return render_template('/main/Vista_principal(1).html', bolsones_venta = bolsones_venta)
+    return redirect(url_for('bolson.bolsones_en_venta'))
     #return render_template('/main/Vista_principal(1).html'
 
 
@@ -35,6 +22,7 @@ def envio_ofertas():
 @main.route('/registro', methods=['POST', "GET"])
 def registro():
     form = RegistroForm()  # Instanciar formulario
+    form.rol.choices = ["cliente", "proveedor"]
     if form.validate_on_submit():  # Si el formulario ha sido enviado y es validado correctamente
         data = {}
         data["nombre"] = form.nombre.data

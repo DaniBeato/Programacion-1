@@ -32,8 +32,8 @@
             <div class="col-md-2">
                 <div class="card" style="width: 18rem;">
                     <div class="card-body">
-                        <h5 class="card-title">Administradores </h5>
-                        <a href="/usuario/administradores" class="card-link">Acceder</a>
+                        <h5 class="card-title">Modificar Información Personal </h5>
+                        <a href="{{ url_for('usuario.administrador', id = id) }}" class="card-link">Acceder</a>
                     </div>
                 </div>
             </div>
@@ -122,8 +122,16 @@
                 </div>
             </div>
             <div class="col-md-1"></div>
-            <div class="col-md-2"></div>
-            <div class="col-md-6.5"></div>
+            <div class="col-md-0.5"></div>
+            <div class="col-md-2">
+                <div class="card" style="width: 18rem;">
+                    <div class="card-body">
+                        <h5 class="card-title">Administradores </h5>
+                        <a href="/usuario/administradores" class="card-link">Acceder</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6"></div>
         </div>
         <div class="row">
             <div class="col-md-12"><br>&nbsp;</div>

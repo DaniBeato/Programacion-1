@@ -11,7 +11,7 @@ class ProductoForm(FlaskForm):
          validators.required(message = 'Debe introducir un nombre'),
      ])
 
-    usuario_ID = IntegerField('ID_Administrador')
+    usuario_ID = SelectField()
 
 
     submit = SubmitField('Guardar Información')

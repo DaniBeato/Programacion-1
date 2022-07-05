@@ -9,16 +9,16 @@ class Productos_Bolsones(db.Model):
     productos = db.relationship("Productos", back_populates = "productos_bolsones", uselist = False, single_parent = True)
 
     def __repr__(self):
-        return '< Producto_ID: %r, Bolsón_ID: %r >' % (self.producto_ID, self.bolson_ID)
+        return '< Producto_ID: %r, Bolsón_ID: %r, Productos: %r >' % (self.producto_ID, self.bolson_ID, self.productos)
 
 
     def hacia_json(self):
         producto_bolson_json = {
             'id': self.id,
             'producto_ID': self.producto_ID,
-            'bolson_ID': self.bolson_ID
-            #'bolson': self.bolson.hacia_json(),
-            #'producto': self.producto.hacia_json()
+            'bolson_ID': self.bolson_ID,
+            #'bolsones': self.bolsones.hacia_json(),
+            'productos': self.productos.hacia_json()
         }
         return producto_bolson_json
 

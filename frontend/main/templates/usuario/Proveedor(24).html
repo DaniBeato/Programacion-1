@@ -9,7 +9,7 @@
 
 {% block body %}
    <div class="container-fluid">
-       {% if object.id == current_user.id or current_user== "admin"%}
+       {% if object.id == current_user.id or current_user.rol == "admin"%}
             {{ macro_header.show_header(header) }}
             {{ macro_object.show_object(object) }}
              <div class="row">

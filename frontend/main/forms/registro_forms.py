@@ -3,6 +3,7 @@ from flask_wtf import FlaskForm #Importa funciones de formulario
 from wtforms import PasswordField, SubmitField, StringField, SelectField, HiddenField #Importa campos
 from wtforms.fields.html5 import EmailField,DateField #Importa campos HTML
 from wtforms import validators #Importa validaciones
+from flask_login import current_user
 
 class RegistroForm(FlaskForm):
 
@@ -38,7 +39,7 @@ class RegistroForm(FlaskForm):
         validators.Length(min=3)
     ])
 
-    rol = SelectField('Rol', choices = ['admin', 'cliente', 'proveedor'])
+    rol = SelectField('Rol')
 
 
     submit = SubmitField('Guardar Información')

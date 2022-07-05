@@ -1,7 +1,6 @@
 from flask import flash,Blueprint, render_template, redirect, url_for, current_app, request
 import requests, json
-from .auth import admin_required, admin_or_proveedor_required, admin_or_cliente_required, token_vencido, \
-    cliente_required
+from .auth import admin_required, admin_or_proveedor_required, admin_or_cliente_required, token_vencido, cliente_required
 from main.forms.usuario_forms import UsuarioForm
 from main.forms.usuario_forms import UsuarioFilter
 from main.forms.compra_forms import CompraForm
@@ -9,6 +8,7 @@ from main.forms.compra_forms import CompraFilter
 from flask_login import current_user
 from datetime import datetime
 from .main import main
+
 
 
 
@@ -88,6 +88,7 @@ def administrador(id):
 @admin_required
 def editar_administrador(id):
     form = UsuarioForm()  # Instanciar formulario
+    form.rol.choices = ["admin"]
     if form.validate_on_submit():  # Si el formulario ha sido enviado y es validado correctamente
         data = {}
         data["nombre"] = form.nombre.data
@@ -138,16 +139,23 @@ def eliminar_administrador(id):
         'content-type': "application/json",
         'authorization': "Bearer {}".format(auth)
     }
+    adios = False
+    if current_user.id == id:
+        adios = True
+
     r = requests.delete(
         current_app.config["API_URL"] + '/administrador/' + str(id),
         headers=headers)
     if  r.status_code == 204:
-        flash('Administrador eliminado.', 'warning')
-        return redirect(url_for('usuario.administradores'))
+        if adios:
+            flash('Se ha eliminado su usuario.', 'warning')
+            return redirect(url_for('main.cerrar_sesion'))
+        else:
+            flash('Administrador eliminado.', 'warning')
+            return redirect(url_for('usuario.administradores'))
     else:
         flash('Error', 'warning')
         return redirect(url_for('usuario.administradores'))
-
 
 
 @usuario.route('/clientes')
@@ -222,6 +230,7 @@ def cliente(id):
 @admin_or_cliente_required
 def editar_cliente(id):
     form = UsuarioForm()  # Instanciar formulario
+    form.rol.choices = ["cliente"]
     if form.validate_on_submit():  # Si el formulario ha sido enviado y es validado correctamente
         data = {}
         data["nombre"] = form.nombre.data
@@ -265,19 +274,26 @@ def editar_cliente(id):
 
 @usuario.route('/eliminar_cliente/<int:id>')
 @token_vencido
-@admin_required
+@admin_or_cliente_required
 def eliminar_cliente(id):
     auth = request.cookies['token_acceso']
     headers = {
         'content-type': "application/json",
         'authorization': "Bearer {}".format(auth)
     }
+    adios = False
+    if current_user.id == id:
+        adios = True
     r = requests.delete(
         current_app.config["API_URL"] + '/cliente/' + str(id),
         headers=headers)
-    if  r.status_code == 204:
-        flash('Cliente eliminado.', 'warning')
-        return redirect(url_for('usuario.clientes'))
+    if r.status_code == 204:
+        if adios:
+            flash('Se ha eliminado su usuario.', 'warning')
+            return redirect(url_for('main.cerrar_sesion'))
+        else:
+            flash('Cliente eliminado.', 'warning')
+            return redirect(url_for('usuario.clientes'))
     else:
         flash('Error', 'warning')
         return redirect(url_for('usuario.clientes'))
@@ -407,10 +423,10 @@ def crear_compra(id):
     }
 
     data = {}
-    data['usuario_ID'] = current_user.id
-    data['bolson_ID'] = id
+    data['usuario_ID'] = str(current_user.id)
+    data['bolsonID'] = str(id)
     data['retirado'] = 0
-    data['fecha_compra'] = datetime.today().strftime('%d/%m/%Y')
+    data['fecha_compra'] = datetime.now().strftime('%d/%m/%Y')
     print('datos de compra', data)
 
     r = requests.post(
@@ -559,7 +575,8 @@ def proveedor(id):
 @token_vencido
 @admin_or_proveedor_required
 def editar_proveedor(id):
-    form = UsuarioForm()  # Instanciar formulario
+    form = UsuarioForm()
+    form.rol.choices = ["proveedor"]# Instanciar formulario
     if form.validate_on_submit():  # Si el formulario ha sido enviado y es validado correctamente
         data = {}
         data["nombre"] = form.nombre.data
@@ -610,16 +627,22 @@ def eliminar_proveedor(id):
         'content-type': "application/json",
         'authorization': "Bearer {}".format(auth)
     }
+    adios = False
+    if current_user.id == id:
+        adios = True
     r = requests.delete(
         current_app.config["API_URL"] + '/proveedor/' + str(id),
         headers=headers)
-    if  r.status_code == 204:
-        flash('Proveedor eliminado.', 'warning')
-        return redirect(url_for('usuario.proveedores'))
+    if r.status_code == 204:
+        if adios:
+            flash('Se ha eliminado su usuario.', 'warning')
+            return redirect(url_for('main.cerrar_sesion'))
+        else:
+            flash('Proveedor eliminado.', 'warning.')
+            return redirect(url_for('usuario.proveedores'))
     else:
         flash('Error', 'warning')
         return redirect(url_for('usuario.proveedores'))
-
 
 
 

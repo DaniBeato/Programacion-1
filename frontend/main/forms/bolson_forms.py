@@ -17,6 +17,8 @@ class BolsonForm(FlaskForm):
 
     fecha = DateField('Fecha')
 
+    precio = StringField('Precio')
+
     producto = SelectField('Producto', coerce=int, validate_choice=False)
 
     producto2 = SelectField('Producto 2', coerce=int, validate_choice=False)

@@ -390,11 +390,14 @@ def bolsones_en_venta():
     feature = "nombre"
     url_actual = "bolson.bolsones_en_venta"
     print(bolsones_venta)
-    if current_user.rol == 'admin':
+    if current_user.is_anonymous:
+        return render_template('/bolson/Bolsones_venta(cliente)_lista(13).html', header=header, objects=bolsones_venta,
+                               url=url, feature=feature,
+                               paginacion=paginacion, filter=filter, url_actual=url_actual)
+    elif current_user.rol=='admin':
         ths_list = ["nombre", "estado", "fecha"]
         return render_template('/bolson/Bolsones_venta(admin)_lista(15).html', objects = bolsones_venta, header = header ,url = url, filter=filter,
                                ths_list = ths_list, first_dict = 0, url_actual=url_actual, paginacion=paginacion,)
-
     else:
         return render_template('/bolson/Bolsones_venta(cliente)_lista(13).html', header=header, objects=bolsones_venta,
                                url=url, feature=feature,
@@ -423,45 +426,128 @@ def bolson_en_venta(id):
 
 @bolson.route('/productos')
 def productos():
-    filter = ProductoFilter(request.args, meta={'csrf': False})
-    data = {}
-    data['pagina'] = "1"
-    data['cantidad_elementos'] = "5"
-    if 'pagina' in request.args:
-        # Si se han usado los botones de paginación cargar nueva página
-        data["pagina"] = request.args.get('pagina', '')
-    if filter.submit():
-        if filter.nombre.data != '':
-            data["nombre"] = filter.nombre.data
-        print(filter.nombre.data)
-    print(data)
+    if current_user.is_anonymous:
+        filter = ProductoFilter(request.args, meta={'csrf': False})
+        data = {}
+        data['pagina'] = "1"
+        data['cantidad_elementos'] = "5"
+        if 'pagina' in request.args:
+            # Si se han usado los botones de paginación cargar nueva página
+            data["pagina"] = request.args.get('pagina', '')
+        if filter.submit():
+            if filter.nombre.data != '':
+                data["nombre"] = filter.nombre.data
+            print(filter.nombre.data)
+        print(data)
 
-    auth = request.cookies['token_acceso']
-    headers = {
-        'content-type': "application/json",
-        'authorization': "Bearer {}".format(auth)
-    }
-    # print(headers)
+        auth = request.cookies['token_acceso']
+        headers = {
+            'content-type': "application/json",
+            'authorization': "Bearer {}".format(auth)
+        }
+        # print(headers)
 
-    r = requests.get(
-        current_app.config["API_URL"] + '/productos',
-        headers=headers,
-        data=json.dumps(data))
-    print(r.text)
-    productos = json.loads(r.text)['Productos']
+        r = requests.get(
+            current_app.config["API_URL"] + '/productos',
+            headers=headers,
+            data=json.dumps(data))
+        print(r.text)
+        productos = json.loads(r.text)['Productos']
 
-    paginacion = {}
-    paginacion["cantidad_paginas"] = json.loads(r.text)["Cantidad de páginas"]
-    paginacion["pagina_actual"] = json.loads(r.text)["Página actual"]
+        paginacion = {}
+        paginacion["cantidad_paginas"] = json.loads(r.text)["Cantidad de páginas"]
+        paginacion["pagina_actual"] = json.loads(r.text)["Página actual"]
 
-    header = 'Lista de Productos'
-    feature = "nombre"
-    url = 'bolson.producto'
-    ths_list = ['nombre', 'id']
-    url_actual = 'bolson.productos'
-    return render_template('/bolson/Productos_lista(21).html', objects=productos, url=url, header=header,
-                           ths_list=ths_list, first_dict=0,
-                           paginacion=paginacion, filter=filter, url_actual=url_actual, feature=feature)
+        header = 'Lista de Productos'
+        feature = "nombre"
+        url = 'bolson.producto'
+        ths_list = ['nombre', 'id']
+        url_actual = 'bolson.productos'
+        return render_template('/bolson/Productos_lista(21).html', objects=productos, url=url, header=header,
+                               ths_list=ths_list, first_dict=0,
+                               paginacion=paginacion, filter=filter, url_actual=url_actual, feature=feature)
+    elif current_user.rol == "admin" or current_user.rol == 'cliente':
+        filter = ProductoFilter(request.args, meta={'csrf': False})
+        data = {}
+        data['pagina'] = "1"
+        data['cantidad_elementos'] = "5"
+        if 'pagina' in request.args:
+            # Si se han usado los botones de paginación cargar nueva página
+            data["pagina"] = request.args.get('pagina', '')
+        if filter.submit():
+            if filter.nombre.data != '':
+                data["nombre"] = filter.nombre.data
+            print(filter.nombre.data)
+        print(data)
+
+        auth = request.cookies['token_acceso']
+        headers = {
+            'content-type': "application/json",
+            'authorization': "Bearer {}".format(auth)
+        }
+        # print(headers)
+
+        r = requests.get(
+            current_app.config["API_URL"] + '/productos',
+            headers=headers,
+            data=json.dumps(data))
+        print(r.text)
+        productos = json.loads(r.text)['Productos']
+
+        paginacion = {}
+        paginacion["cantidad_paginas"] = json.loads(r.text)["Cantidad de páginas"]
+        paginacion["pagina_actual"] = json.loads(r.text)["Página actual"]
+
+        header = 'Lista de Productos'
+        feature = "nombre"
+        url = 'bolson.producto'
+        ths_list = ['nombre', 'id']
+        url_actual = 'bolson.productos'
+        return render_template('/bolson/Productos_lista(21).html', objects=productos, url=url, header=header,
+                               ths_list=ths_list, first_dict=0,
+                               paginacion=paginacion, filter=filter, url_actual=url_actual, feature=feature)
+    else:
+        filter = ProductoFilter(request.args, meta={'csrf': False})
+        data = {}
+        data['pagina'] = "1"
+        data['cantidad_elementos'] = "5"
+        data['usuario_ID'] = current_user.id
+        if 'pagina' in request.args:
+            # Si se han usado los botones de paginación cargar nueva página
+            data["pagina"] = request.args.get('pagina', '')
+        if filter.submit():
+            if filter.nombre.data != '':
+                data["nombre"] = filter.nombre.data
+            print(filter.nombre.data)
+        print(data)
+
+        auth = request.cookies['token_acceso']
+        headers = {
+            'content-type': "application/json",
+            'authorization': "Bearer {}".format(auth)
+        }
+        # print(headers)
+
+        r = requests.get(
+            current_app.config["API_URL"] + '/productos',
+            headers=headers,
+            data=json.dumps(data))
+        print(r.text)
+        productos = json.loads(r.text)['Productos']
+
+        paginacion = {}
+        paginacion["cantidad_paginas"] = json.loads(r.text)["Cantidad de páginas"]
+        paginacion["pagina_actual"] = json.loads(r.text)["Página actual"]
+
+        header = 'Lista de Productos'
+        feature = "nombre"
+        url = 'bolson.producto'
+        ths_list = ['nombre', 'id']
+        url_actual = 'bolson.productos'
+        return render_template('/bolson/Productos_lista(21).html', objects=productos, url=url, header=header,
+                               ths_list=ths_list, first_dict=0,
+                               paginacion=paginacion, filter=filter, url_actual=url_actual, feature=feature)
+
 
 
 @bolson.route('/producto/<int:id>')
@@ -487,6 +573,26 @@ def producto(id):
 @admin_or_proveedor_required
 def crear_editar_producto(id):
     form = ProductoForm()  # Instanciar formulario
+    data = {}
+    data['pagina'] = "1"
+    data['cantidad_elementos'] = "5"
+    auth = request.cookies['token_acceso']
+    headers = {
+        'content-type': "application/json",
+        'authorization': "Bearer {}".format(auth)
+    }
+    # print(headers)
+
+    r = requests.get(
+        current_app.config["API_URL"] + '/proveedores',
+        headers=headers,
+        data=json.dumps(data))
+    print(r.text)
+
+    proveedores = [(item['id'], item['nombre']) for item in json.loads(r.text)["Proveedores"]]
+    proveedores.insert(0, (0, ''))
+    form.usuario_ID.choices = proveedores
+
     if form.validate_on_submit():  # Si el formulario ha sido enviado y es validado correctamente
         data = {}
         data["nombre"] = form.nombre.data
@@ -553,6 +659,12 @@ def eliminar_producto(id):
         'content-type': "application/json",
         'authorization': "Bearer {}".format(auth)
     }
+    '''
+    r = requests.get(
+        current_app.config["API_URL"] + '/producto/' + str(id),
+        headers=headers)
+    if r.text['']
+    '''
     r = requests.delete(
         current_app.config["API_URL"] + '/producto/' + str(id),
         headers=headers)

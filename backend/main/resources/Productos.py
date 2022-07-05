@@ -19,6 +19,8 @@ class Productos(Resource):
                     cantidad_elementos = int(valor)
                 if clave == 'nombre':
                     productos = productos.filter(ProductosModels.nombre == valor)
+                if clave == 'usuario_ID':
+                    productos = productos.filter(ProductosModels.usuario_ID == valor)
         productos = productos.paginate(pagina, cantidad_elementos, True, 30)
         return jsonify({'Productos': [producto.hacia_json() for producto in productos.items],
                         'Cantidad total de productos': productos.total,

@@ -10,7 +10,54 @@
 {% block body %}
    <div class="container-fluid">
        {{ macro_header.show_header(header) }}
-       {{ macro_object.show_object(object) }}
+       <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-2">
+                <div class="p-3 mb-2 bg-primary text-white">Nombre</div>
+            </div>
+            <div class="col-md-1"></div>
+            <div class="col-md-7">
+                <div class="card">
+                    <div class="card-body">{{object['nombre']}}</div>
+                </div>
+            </div>
+            <div class="col-md-1"></div>
+        </div>
+        <div class="row">
+            <div class="col-md-12"><br><br>&nbsp;</div>
+        </div>
+       <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-2">
+                <div class="p-3 mb-2 bg-primary text-white">Fecha</div>
+            </div>
+            <div class="col-md-1"></div>
+            <div class="col-md-7">
+                <div class="card">
+                    <div class="card-body">{{object['fecha']}}</div>
+                </div>
+            </div>
+            <div class="col-md-1"></div>
+        </div>
+        <div class="row">
+            <div class="col-md-12"><br><br>&nbsp;</div>
+        </div>
+       <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-2">
+                <div class="p-3 mb-2 bg-primary text-white">Productos</div>
+            </div>
+            <div class="col-md-1"></div>
+            <div class="col-md-7">
+                <div class="card">
+                    <div class="card-body">{{object['productos']}}</div>
+                </div>
+            </div>
+            <div class="col-md-1"></div>
+        </div>
+        <div class="row">
+            <div class="col-md-12"><br><br>&nbsp;</div>
+        </div>
     <div class="row">
         <div class="col-md-12">
             <a type="button" href="{{ url_for('usuario.crear_compra', id=object.id) }}" class="btn btn-primary">Comprar</a>
