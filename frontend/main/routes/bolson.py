@@ -173,6 +173,7 @@ def crear_editar_bolson_pendiente(id):
 
         data = {}
         data["nombre"] = form.nombre.data
+        data["precio"] = form.precio.data
         data["estado"] = form.estado.data
         data["fecha"] = form.fecha.data.strftime('%d/%m/%Y')
 
@@ -394,7 +395,7 @@ def bolsones_en_venta():
         return render_template('/bolson/Bolsones_venta(cliente)_lista(13).html', header=header, objects=bolsones_venta,
                                url=url, feature=feature,
                                paginacion=paginacion, filter=filter, url_actual=url_actual)
-    elif current_user.rol=='admin':
+    elif current_user.rol == "admin":
         ths_list = ["nombre", "estado", "fecha"]
         return render_template('/bolson/Bolsones_venta(admin)_lista(15).html', objects = bolsones_venta, header = header ,url = url, filter=filter,
                                ths_list = ths_list, first_dict = 0, url_actual=url_actual, paginacion=paginacion,)
@@ -589,7 +590,7 @@ def crear_editar_producto(id):
         data=json.dumps(data))
     print(r.text)
 
-    proveedores = [(item['id'], item['nombre']) for item in json.loads(r.text)["Proveedores"]]
+    proveedores = [(item['id'], (item['nombre'], item['apellido'])) for item in json.loads(r.text)["Proveedores"]]
     proveedores.insert(0, (0, ''))
     form.usuario_ID.choices = proveedores
 

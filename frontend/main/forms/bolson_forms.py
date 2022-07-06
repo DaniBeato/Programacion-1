@@ -1,6 +1,6 @@
 # - *- coding: utf- 8 - *-
 from flask_wtf import FlaskForm #Importa funciones de formulario
-from wtforms import PasswordField, SubmitField, StringField, SelectField, HiddenField, DateField, BooleanField #Importa campos
+from wtforms import PasswordField, SubmitField, StringField, SelectField, HiddenField, DateField, BooleanField, IntegerField #Importa campos
 from wtforms.fields.html5 import EmailField, DateField #Importa campos HTML
 from wtforms import validators #Importa validaciones
 
@@ -12,12 +12,15 @@ class BolsonForm(FlaskForm):
          validators.Length(min=5)
      ])
 
+    precio = StringField('Precio')
+
+
     estado = BooleanField()
 
 
     fecha = DateField('Fecha')
 
-    precio = StringField('Precio')
+
 
     producto = SelectField('Producto', coerce=int, validate_choice=False)
 
@@ -37,6 +40,8 @@ class BolsonFormEdit(FlaskForm):
          validators.required(message='Debe introducir un nombre'),
          validators.Length(min=5)
      ])
+
+    precio = StringField('Precio')
 
     estado = BooleanField()
 

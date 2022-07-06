@@ -5,6 +5,7 @@ from . import Productos_BolsonesModels
 class Bolsones(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     nombre = db.Column(db.String(100), nullable = False)
+    precio = db.Column(db.String, nullable = False)
     estado = db.Column(db.Boolean, nullable = False)
     fecha = db.Column(db.DateTime, nullable = False)
     compras = db.relationship("Compras", back_populates = "bolsones", cascade = "all, delete-orphan")
@@ -20,6 +21,7 @@ class Bolsones(db.Model):
         bolson_json = {
             'id': self.id,
             'nombre': self.nombre,
+            'precio': self.precio,
             'estado': self.estado,
             'fecha': self.fecha.strftime('%d/%m/%Y'),
             'productos': productos
@@ -30,10 +32,12 @@ class Bolsones(db.Model):
     def desde_json(bolson_json):
         id = bolson_json.get('id')
         nombre = bolson_json.get('nombre')
+        precio = bolson_json.get('precio')
         estado = bolson_json.get('estado')
         fecha = datetime.strptime(bolson_json.get('fecha'), '%d/%m/%Y')
         bolson = Bolsones(id = id,
                       nombre = nombre,
+                      precio = precio,
                       estado = estado,
                       fecha = fecha,
                       )
